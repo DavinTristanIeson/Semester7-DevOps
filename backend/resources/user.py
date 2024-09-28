@@ -2,8 +2,9 @@ import pydantic
 
 # Resource
 class UserResource(pydantic.BaseModel):
-  id: str
+  id: int
   email: str
+
 
 class SessionTokenResource(pydantic.BaseModel):
   access_token: str
@@ -14,6 +15,6 @@ class SessionTokenResource(pydantic.BaseModel):
 class RefreshTokenSchema(pydantic.BaseModel):
   refresh_token: str
 
-class UserMutationSchema(pydantic.BaseModel):
+class AuthSchema(pydantic.BaseModel):
   email: str
   password: str

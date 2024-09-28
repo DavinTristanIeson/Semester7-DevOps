@@ -1,17 +1,22 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi_jwt_auth.exceptions import AuthJWTException
-from models.jwt import authjwt_exception_handler
-
 import dotenv
+
 dotenv.load_dotenv()
 
-from routes import auth_router
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+import controllers
+import routes
+import models
+
+models.base.SQLBaseModel.metadata.create_all(models.base.engine)
 
 
 app = FastAPI()
-app.exception_handler(AuthJWTException)(authjwt_exception_handler)
+app.exception_handler(controllers.auth.AuthenticationError)(
+  controllers.auth.AuthenticationError.handler
+)
 
-app.mount('/api/auth', auth_router)
+app.include_router(routes.auth.router, prefix='/api/auth')
 # https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html
 app.mount("/", StaticFiles(directory="../frontend/out", html = True), name="static")

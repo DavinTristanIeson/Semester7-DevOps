@@ -30,13 +30,9 @@ email-validator==2.2.0
 exceptiongroup==1.2.2
     # via anyio
 fastapi[standard]==0.115.0
-    # via
-    #   -r requirements.in
-    #   fastapi-jwt-auth
+    # via -r requirements.in
 fastapi-cli[standard]==0.0.5
     # via fastapi
-fastapi-jwt-auth==0.5.0
-    # via -r requirements.in
 fastapi-pagination==0.12.27
     # via -r requirements.in
 greenlet==3.1.1
@@ -72,8 +68,8 @@ pydantic-core==2.23.4
     # via pydantic
 pygments==2.18.0
     # via rich
-pyjwt==1.7.1
-    # via fastapi-jwt-auth
+pyjwt==2.9.0
+    # via -r requirements.in
 python-dotenv==1.0.1
     # via uvicorn
 python-multipart==0.0.10

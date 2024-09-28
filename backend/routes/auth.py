@@ -1,46 +1,51 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.responses import HTMLResponse
-from fastapi_jwt_auth import AuthJWT
+from fastapi.security import HTTPAuthorizationCredentials
 
-from resources.user import UserMutationSchema, UserResource, SessionTokenResource
+import controllers
+from models.base import SQLSession
+from models.user import RefreshTokenModel
+from resources.user import AuthSchema, UserResource, SessionTokenResource
 
 router = APIRouter() 
 
-@router.get('me')
-async def get__me(Authorize: AuthJWT = Depends())->UserResource:
-  Authorize.jwt_required()
-  current_user = Authorize.get_jwt_subject()
-  return UserResource(id='', email='')
+@router.get('/me')
+async def get__me(auth: controllers.auth.JWTAuthDependency)->UserResource:
+  return UserResource(id=auth.user_id, email='')
 
-@router.post('login')
-async def post__login(user: UserMutationSchema, Authorize: AuthJWT = Depends()):
-  if user.email != "test" or user.password != "test":
-    raise HTTPException(status_code=400, detail="Invalid username or password")
+@router.post('/login')
+async def post__login(body: AuthSchema):
+  if body.email != "test" or body.password != "test":
+    raise HTTPException(status_code=403, detail="Invalid username or password")
 
   # subject identifier for who this token is for example id or username from database
-  id = ''
-  access_token = Authorize.create_access_token(subject=id)
-  refresh_token = Authorize.create_refresh_token(subject=id)
-  return SessionTokenResource(access_token=access_token, refresh_token=refresh_token)
+  id = 0
+  return controllers.auth.jwt_create(id)
 
-@router.post('refresh')
-async def post__refresh(Authorize: AuthJWT = Depends()):
-  Authorize.jwt_refresh_token_required()
-  id = ''
-  access_token = Authorize.create_access_token(subject=id)
-  refresh_token = Authorize.create_refresh_token(subject=id)
-  return SessionTokenResource(access_token=access_token, refresh_token=refresh_token)
+@router.post('/refresh')
+async def post__refresh(auth: controllers.auth.JWTAuthDependency):
+  with SQLSession.begin() as db:
+    token = db.query(RefreshTokenModel)\
+      .where(
+        (RefreshTokenModel.id == auth.user_id) &
+        (auth.exp < RefreshTokenModel.expiry)
+      )\
+      .first()
+    
+  if token is None:
+    raise controllers.auth.AuthenticationError("Refresh token is expired.")
+
+  id = 0
+  return controllers.auth.jwt_create(id)
 
 
-@router.post('register')
-async def post__register(Authorize: AuthJWT = Depends()):
-  Authorize.jwt_required()
-  id = ''
-  access_token = Authorize.create_access_token(subject=id)
-  refresh_token = Authorize.create_refresh_token(subject=id)
+@router.post('/register')
+async def post__register(body: AuthSchema):
+  id = 0
+  content = controllers.auth.jwt_create(id)
 
   return Response(
-    content=SessionTokenResource(access_token=access_token, refresh_token=refresh_token),
+    content=content.model_dump_json(),
     status_code=201
   )
 
