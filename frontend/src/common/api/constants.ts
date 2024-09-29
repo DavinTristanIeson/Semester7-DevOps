@@ -1,7 +1,7 @@
 import { Options } from "ky";
 import EnvironmentVariables from "../constants/env";
 
-export const GET_ME_KEY = ['getMe'];
+export const AUTH_KEY = ['auth'];
 
 export const API_PREFIX = 'api';
 export const KY_BASE_CONFIG: Options = {

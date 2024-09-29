@@ -1,9 +1,9 @@
 import "reflect-metadata";
+import '@mantine/core/styles.css';
 import "@/styles/globals.css";
 import {
   createTheme,
   MantineProvider,
-  TypographyStylesProvider,
 } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -17,25 +17,22 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        {" "}
         <title>Parallel</title>
       </Head>
       <MantineProvider theme={mantineTheme}>
-        <TypographyStylesProvider>
-          <Notifications
-            limit={10}
-            position="top-right"
-            zIndex={9999999}
-            autoClose={4000}
-          />
-          <QueryClientProvider client={queryClient}>
-            {/* Enable this if you need to debug react query */}
-            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-            <PrivateRoutes>
-              <Component {...pageProps} />
-            </PrivateRoutes>
-          </QueryClientProvider>
-        </TypographyStylesProvider>
+        <Notifications
+          limit={10}
+          position="top-right"
+          zIndex={9999999}
+          autoClose={4000}
+        />
+        <QueryClientProvider client={queryClient}>
+          {/* Enable this if you need to debug react query */}
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          <PrivateRoutes>
+            <Component {...pageProps} />
+          </PrivateRoutes>
+        </QueryClientProvider>
       </MantineProvider>
     </>
   );

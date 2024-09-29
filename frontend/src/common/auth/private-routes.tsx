@@ -10,6 +10,7 @@ import Colors from "../constants/colors";
 const PUBLIC_ROUTES: Record<NavigationRoutes, boolean> = {
   [NavigationRoutes.Home]: false,
   [NavigationRoutes.Login]: true,
+  [NavigationRoutes.Register]: true,
 };
 
 export function isProtectedRoutes(route: string) {

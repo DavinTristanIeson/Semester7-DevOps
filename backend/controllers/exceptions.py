@@ -12,7 +12,7 @@ class ApiError(Exception):
     self.status_code = status_code
 
   def as_response(self)->Response:
-    return JSONResponse(content=ApiErrorResult(message=self.message).model_dump_json(), status_code=self.status_code)
+    return JSONResponse(content=ApiErrorResult(message=self.message).model_dump(), status_code=self.status_code)
 
 def default_exception_handler(request: Request, exc: ApiError):
   return exc.as_response()
@@ -36,7 +36,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
   return JSONResponse(
     status_code=400,
-    content=ApiErrorResult(message=raw_errors[0]['msg'], errors=errors),
+    content=ApiErrorResult(message=raw_errors[0]['msg'], errors=errors).model_dump(),
   )
 
 def register_error_handlers(app: FastAPI):

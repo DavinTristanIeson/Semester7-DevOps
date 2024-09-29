@@ -14,12 +14,15 @@ interface CommonQueryFunctionProps {
 
 export async function ApiFetch(props: CommonQueryFunctionProps): Promise<any> {
   const usedClient: KyInstance = props.client ?? client;
-  const clientProps: Options = {}
+  const clientProps: Options = {method: props.method}
   if (props.params) {
     clientProps.searchParams = props.params;
   }
+  if (props.body){
+    clientProps.json = props.body;
+  }
   try {
-    const response = await usedClient.get(props.url, clientProps);
+    const response = await usedClient(props.url, clientProps);
     const result = await response.json() as any;
     const data = plainToInstance(props.classType, result.data)
     return {

@@ -12,7 +12,7 @@ class UserModel(SQLBaseModel):
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
   email: Mapped[str] = mapped_column(String(255))
   # hashed
-  password: Mapped[str] = mapped_column(String(255))
+  password: Mapped[bytes] = mapped_column(String(255))
 
 class RefreshTokenModel(SQLBaseModel):
   __tablename__ = "refresh_tokens"

@@ -1,4 +1,5 @@
 import { HTTPError, TimeoutError } from 'ky';
+import { camelizeKeys} from 'humps';
 
 import { ApiError } from './model';
 
@@ -30,7 +31,7 @@ export async function toApiError(error: Error): Promise<ApiError> {
       const body = await error.response.json();
       mError.message = body.message;
       mError.statusCode = error.response.status;
-      mError.errors = body.errors;
+      mError.errors = camelizeKeys(body.errors);
     } catch { }
   } else if (error instanceof TimeoutError) {
     mError.message = 'Looks like the server is taking too long to respond';

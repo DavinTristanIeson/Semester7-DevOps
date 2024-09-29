@@ -4,47 +4,48 @@ import { LoginInput, RegisterInput, UserModel } from "./model";
 import { ApiResult } from "@/common/api/model";
 import { ApiFetch } from "@/common/api/fetch";
 import { queryClient } from "@/common/api/query-client";
-import { GET_ME_KEY } from "@/common/api/constants";
+import { AUTH_KEY } from "@/common/api/constants";
+import { SessionTokenModel } from "@/common/auth/api";
 
-export const useLogin: ApiMutationFunction<LoginInput, ApiResult<UserModel>> = function (options) {
+export const useLogin: ApiMutationFunction<LoginInput, ApiResult<SessionTokenModel>> = function (options) {
   return useMutation({
     ...options,
     mutationFn(body) {
       return ApiFetch({
-        classType: UserModel,
+        classType: SessionTokenModel,
         url: 'auth/login',
         body,
         method: 'post',
       });
     },
     onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: [GET_ME_KEY]
+      queryClient.refetchQueries({
+        queryKey: AUTH_KEY
       });
     },
   });
 }
 
-export const useRegister: ApiMutationFunction<RegisterInput, ApiResult<UserModel>> = function (options) {
+export const useRegister: ApiMutationFunction<RegisterInput, ApiResult<SessionTokenModel>> = function (options) {
   return useMutation({
     ...options,
     mutationFn(body) {
       return ApiFetch({
-        classType: UserModel,
+        classType: SessionTokenModel,
         url: 'auth/register',
         body,
         method: 'post',
       });
     },
     onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: [GET_ME_KEY]
+      queryClient.refetchQueries({
+        queryKey: AUTH_KEY
       });
     },
   });
 }
 
-export const useLogout: ApiMutationFunction<never, ApiResult<never>> = function (options) {
+export const useLogout: ApiMutationFunction<void, ApiResult<never>> = function (options) {
   return useMutation({
     ...options,
     mutationFn(body) {
@@ -56,8 +57,8 @@ export const useLogout: ApiMutationFunction<never, ApiResult<never>> = function 
       });
     },
     onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: [GET_ME_KEY]
+      queryClient.refetchQueries({
+        queryKey: AUTH_KEY
       });
     },
   });

@@ -8,8 +8,8 @@ from models.user import AuthSchema, UserResource
 router = APIRouter() 
 
 @router.get('/me')
-async def get__me(auth: controllers.auth.JWTAuthDependency)->UserResource:
-  return controllers.user.get_user(auth.user_id)
+async def get__me(auth: controllers.auth.JWTAuthDependency):
+  return ApiResult(data=controllers.user.get_user(auth.user_id), message=None)
 
 @router.post('/login')
 async def post__login(body: AuthSchema):
@@ -26,7 +26,7 @@ async def post__register(body: AuthSchema):
   content = controllers.auth.jwt_create(user.id)
 
   return JSONResponse(
-    content=ApiResult(data=content, message="Registered account successfully.").model_dump_json(),
+    content=ApiResult(data=content, message="Registered account successfully.").model_dump(),
     status_code=201
   )
 

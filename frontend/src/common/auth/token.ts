@@ -1,5 +1,6 @@
 import { SessionTokenModel, mutateRefreshToken } from '@/common/auth/api';
 import { LocalStorageKeys } from '@/common/constants/browser-storage';
+import { plainToInstance } from 'class-transformer';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import throttle from 'lodash/throttle';
 
@@ -8,7 +9,7 @@ export namespace SessionToken {
     if (typeof window === 'undefined') return undefined;
     const response = localStorage.getItem(LocalStorageKeys.Auth);
     if (response === null) return undefined;
-    const token = JSON.parse(response) as SessionTokenModel;
+    const token = plainToInstance(SessionTokenModel, JSON.parse(response));
     return token;
   }
 

@@ -22,11 +22,12 @@ def get_user_by_auth(auth: AuthSchema)->UserResource:
         (UserModel.email == auth.email)
       )\
       .first()
+    db.expunge_all()
     
-  exc = ApiError("Email is already in use", 403)
+  exc = ApiError("Email or password is wrong", 403)
   if user is None:
     raise exc
-  if not bcrypt.checkpw(auth.password.encode(), user.password.encode()):
+  if not bcrypt.checkpw(auth.password.encode(), user.password):
     raise exc
   return UserResource(id=user.id, email=user.email)
 

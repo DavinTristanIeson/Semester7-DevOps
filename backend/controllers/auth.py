@@ -1,4 +1,5 @@
 import datetime
+from enum import Enum
 from typing import Annotated
 from fastapi import Depends, Request
 import jwt
@@ -9,18 +10,29 @@ from controllers.exceptions import ApiError
 from models.sql import SQLSession
 from models.user import RefreshTokenModel, SessionTokenResource
 
+class SessionTokenType(Enum):
+  AccessToken = 'access_token'
+  RefreshToken = 'refresh_token'
+
+  def get_env(self)->EnvironmentVariables:
+    return (EnvironmentVariables.AccessTokenSecret
+      if type == SessionTokenType.AccessToken
+      else EnvironmentVariables.RefreshTokenSecret)
+
 class SessionTokenData(pydantic.BaseModel):
   user_id: int
   exp: datetime.datetime
 
   @staticmethod
-  def decode(token: str)->"SessionTokenData":
-    secret = EnvironmentVariables.get(EnvironmentVariables.SessionSecret)
-    content = jwt.decode(token, secret, algorithm="HS256")
+  def decode(token: str, type: SessionTokenType)->"SessionTokenData":
+    secret = EnvironmentVariables.get(
+      type.get_env()
+    )
+    content = jwt.decode(token, secret, algorithms=["HS256"])
     return SessionTokenData.model_validate(content)
 
-  def encode(self)->str:
-    secret = EnvironmentVariables.get(EnvironmentVariables.SessionSecret)
+  def encode(self, type: SessionTokenType)->str:
+    secret = type.get_env()
     return jwt.encode(self.model_dump(), secret, algorithm="HS256")
 
 
@@ -33,7 +45,7 @@ def jwt_create(user_id: int)->SessionTokenResource:
   refresh_token = SessionTokenData(user_id=user_id, exp=refresh_token_exp)
 
   with SQLSession.begin() as db:
-    new_token = RefreshTokenModel(id=user_id, token=refresh_token.encode(), expiry=refresh_token.exp)
+    new_token = RefreshTokenModel(id=user_id, token=refresh_token.encode(SessionTokenType.RefreshToken), expiry=refresh_token.exp)
     old_token = db.query(RefreshTokenModel).where(RefreshTokenModel.id == user_id).limit(1).first()
     if old_token is not None:
       old_token.expiry = new_token.expiry
@@ -42,8 +54,8 @@ def jwt_create(user_id: int)->SessionTokenResource:
       db.add(new_token)
 
   return SessionTokenResource(
-    access_token=access_token.encode(),
-    refresh_token=refresh_token.encode()
+    access_token=access_token.encode(SessionTokenType.AccessToken),
+    refresh_token=refresh_token.encode(SessionTokenType.RefreshToken)
   )
 
 def jwt_authorize(request: Request)->SessionTokenData:
@@ -59,8 +71,8 @@ def jwt_authorize(request: Request)->SessionTokenData:
     raise ApiError("Expected JWT token in Authorization header.", 401)
   
   try:
-    token = SessionTokenData.decode(authorization)
-  except jwt.DecodeError:
+    token = SessionTokenData.decode(authorization, SessionTokenType.AccessToken)
+  except jwt.DecodeError as e:
     raise ApiError("Unauthenticated.", 401)
   
   if token.exp > datetime.datetime.now():
@@ -77,10 +89,9 @@ def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
       )\
       .first()
     
-  if token_in_db is not None:
-    return jwt_create(token.user_id)
-  else:
-    raise ApiError("Refresh token has expired", 401)
+  if token_in_db is None:
+    raise ApiError("Refresh token has expired", 401)    
+  return jwt_create(token.user_id)
 
 JWTAuthDependency = Annotated[SessionTokenData, Depends(jwt_authorize)]
     
