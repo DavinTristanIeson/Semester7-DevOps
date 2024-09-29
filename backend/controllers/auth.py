@@ -1,23 +1,13 @@
 import datetime
-from typing import Annotated, Optional
-from fastapi import Depends, Request, Response
+from typing import Annotated
+from fastapi import Depends, Request
 import jwt
 import pydantic
-import sqlalchemy as sql
 
 from common.constants import EnvironmentVariables
-from models.base import SQLSession
-from models.user import RefreshTokenModel
-from resources.user import SessionTokenResource
-
-class AuthenticationError(Exception):
-  message: str
-  def __init__(self, message = "Unauthenticated"):
-    self.message = message
-
-  @staticmethod
-  def handler(request: Request, error: "AuthenticationError")->Response:
-    return Response(content=error.message, status_code=401)
+from controllers.exceptions import ApiError
+from models.sql import SQLSession
+from models.user import RefreshTokenModel, SessionTokenResource
 
 class SessionTokenData(pydantic.BaseModel):
   user_id: int
@@ -59,24 +49,38 @@ def jwt_create(user_id: int)->SessionTokenResource:
 def jwt_authorize(request: Request)->SessionTokenData:
   header = request.headers.get('Authorization')
   if not header:
-    raise AuthenticationError("Expected Authorization header.")
+    raise ApiError("Expected Authorization header.", 401)
   
   bearer, authorization = header.split(' ')
   if bearer != "Bearer":
-    raise AuthenticationError("Expected Bearer Authorization.")
+    raise ApiError("Expected Bearer Authorization.", 401)
   
   if len(authorization) == 0:
-    raise AuthenticationError("Expected JWT token in Authorization header.")
+    raise ApiError("Expected JWT token in Authorization header.", 401)
   
   try:
     token = SessionTokenData.decode(authorization)
   except jwt.DecodeError:
-    raise AuthenticationError()
+    raise ApiError("Unauthenticated.", 401)
   
   if token.exp > datetime.datetime.now():
-    raise AuthenticationError("Access token is expired")
+    raise ApiError("Access token is expired", 401)
   
   return token
+
+def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
+  with SQLSession.begin() as db:
+    token_in_db = db.query(RefreshTokenModel)\
+      .where(
+        (RefreshTokenModel.id == token.user_id) &
+        (token.exp < RefreshTokenModel.expiry)
+      )\
+      .first()
+    
+  if token_in_db is not None:
+    return jwt_create(token.user_id)
+  else:
+    raise ApiError("Refresh token has expired", 401)
 
 JWTAuthDependency = Annotated[SessionTokenData, Depends(jwt_authorize)]
     
@@ -84,5 +88,4 @@ __all__ = [
   "JWTAuthDependency",
   "jwt_create",
   "SessionTokenData",
-  "AuthenticationError"
 ]

@@ -1,51 +1,32 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
-from fastapi.responses import HTMLResponse
-from fastapi.security import HTTPAuthorizationCredentials
+from fastapi import APIRouter, Response
+from fastapi.responses import JSONResponse
 
 import controllers
-from models.base import SQLSession
-from models.user import RefreshTokenModel
-from resources.user import AuthSchema, UserResource, SessionTokenResource
+from models.api import ApiResult
+from models.user import AuthSchema, UserResource
 
 router = APIRouter() 
 
 @router.get('/me')
 async def get__me(auth: controllers.auth.JWTAuthDependency)->UserResource:
-  return UserResource(id=auth.user_id, email='')
+  return controllers.user.get_user(auth.user_id)
 
 @router.post('/login')
 async def post__login(body: AuthSchema):
-  if body.email != "test" or body.password != "test":
-    raise HTTPException(status_code=403, detail="Invalid username or password")
-
-  # subject identifier for who this token is for example id or username from database
-  id = 0
-  return controllers.auth.jwt_create(id)
+  user = controllers.user.get_user_by_auth(body)
+  return ApiResult(data=controllers.auth.jwt_create(user.id), message=None)
 
 @router.post('/refresh')
-async def post__refresh(auth: controllers.auth.JWTAuthDependency):
-  with SQLSession.begin() as db:
-    token = db.query(RefreshTokenModel)\
-      .where(
-        (RefreshTokenModel.id == auth.user_id) &
-        (auth.exp < RefreshTokenModel.expiry)
-      )\
-      .first()
-    
-  if token is None:
-    raise controllers.auth.AuthenticationError("Refresh token is expired.")
-
-  id = 0
-  return controllers.auth.jwt_create(id)
-
+async def post__refresh(auth: controllers.auth.JWTAuthDependency):    
+  return ApiResult(data=controllers.auth.jwt_refresh(auth), message="Refreshed token successfully.")
 
 @router.post('/register')
 async def post__register(body: AuthSchema):
-  id = 0
-  content = controllers.auth.jwt_create(id)
+  user = controllers.user.create_user(body)
+  content = controllers.auth.jwt_create(user.id)
 
-  return Response(
-    content=content.model_dump_json(),
+  return JSONResponse(
+    content=ApiResult(data=content, message="Registered account successfully.").model_dump_json(),
     status_code=201
   )
 

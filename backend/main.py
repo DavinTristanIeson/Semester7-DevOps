@@ -9,13 +9,11 @@ import controllers
 import routes
 import models
 
-models.base.SQLBaseModel.metadata.create_all(models.base.engine)
+models.sql.SQLBaseModel.metadata.create_all(models.sql.engine)
 
 
 app = FastAPI()
-app.exception_handler(controllers.auth.AuthenticationError)(
-  controllers.auth.AuthenticationError.handler
-)
+controllers.exceptions.register_error_handlers(app)
 
 app.include_router(routes.auth.router, prefix='/api/auth')
 # https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html

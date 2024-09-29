@@ -1,2 +1,2 @@
-import models.base as base
+import models.sql as sql
 import models.user as user
