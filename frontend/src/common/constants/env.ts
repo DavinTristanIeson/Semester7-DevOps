@@ -6,7 +6,7 @@ function assertEnvExists(name: string, value: any) {
 }
 
 const EnvironmentVariables = {
-  ApiUrl: assertEnvExists("API_URL", process.env.API_URL),
+  ApiUrl: assertEnvExists("NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL),
 }
 
 export default EnvironmentVariables;

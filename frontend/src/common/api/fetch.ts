@@ -27,6 +27,6 @@ export async function ApiFetch(props: CommonQueryFunctionProps): Promise<any> {
       ...result
     }
   } catch (e: any) {
-    throw toApiError(e);
+    throw await toApiError(e);
   }
 }

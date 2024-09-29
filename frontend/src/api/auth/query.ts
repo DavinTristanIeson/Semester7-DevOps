@@ -5,9 +5,15 @@ import { useQuery } from "@tanstack/react-query";
 import { GET_ME_KEY, KY_BASE_CONFIG } from "@/common/api/constants";
 import { ApiFetch } from "@/common/api/fetch";
 import ky from "ky";
+import { KyClientHooks } from "@/common/api/ky-hooks";
 
 // Handles auth state
-const meClient = ky.create(KY_BASE_CONFIG);
+const meClient = ky.create({
+  ...KY_BASE_CONFIG,
+  hooks: {
+    beforeRequest: [KyClientHooks.setupAuthorization]
+  }
+});
 export const useGetMe: ApiQueryFunction<never, ApiResult<UserModel>> = function (options) {
   return useQuery({
     ...options,
