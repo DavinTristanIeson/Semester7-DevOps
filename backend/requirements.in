@@ -1,1 +1,5 @@
 fastapi[standard]
+fastapi-pagination
+PyJWT
+sqlalchemy
+bcrypt
