@@ -28,7 +28,6 @@ class SessionTokenData(pydantic.BaseModel):
   @staticmethod
   def decode(token: str, type: SessionTokenType)->"SessionTokenData":
     secret = SessionTokenType.get_env(type)
-    print(type, secret, token)
     content = jwt.decode(token, secret, algorithms=["HS256"])
     return SessionTokenData.model_validate(content)
 

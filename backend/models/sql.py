@@ -1,5 +1,6 @@
+from typing import ClassVar
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, Mapped, mapped_column
 class SQLBaseModel(DeclarativeBase):
   pass
 

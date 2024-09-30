@@ -2,6 +2,7 @@ import { plainToInstance } from "class-transformer";
 import { client } from "./ky-client";
 import { toApiError } from "./utils";
 import { KyInstance, Options } from "ky";
+import { decamelizeKeys } from "humps";
 
 interface CommonQueryFunctionProps {
   url: string;
@@ -19,7 +20,7 @@ export async function ApiFetch(props: CommonQueryFunctionProps): Promise<any> {
     clientProps.searchParams = props.params;
   }
   if (props.body){
-    clientProps.json = props.body;
+    clientProps.json = decamelizeKeys(props.body);
   }
   try {
     const response = await usedClient(props.url, clientProps);

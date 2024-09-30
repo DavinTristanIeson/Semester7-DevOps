@@ -53,10 +53,13 @@ export const useLogout: ApiMutationFunction<void, ApiResult<never>> = function (
   return useMutation({
     ...options,
     mutationFn(body) {
+      const sessionToken = SessionToken.get();
       return ApiFetch({
         classType: UserModel,
         url: `${ENDPOINT}/logout`,
-        body,
+        body: {
+          refreshToken: sessionToken?.refreshToken,
+        },
         method: 'post',
       });
     },
