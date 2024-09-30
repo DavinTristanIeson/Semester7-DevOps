@@ -11,7 +11,6 @@ export interface ApiResult<T> {
   message?: string;
 }
 
-
 export interface PaginationMeta {
   total: number;
   page: number;
@@ -28,3 +27,4 @@ export interface ExtendedApiResult<T> extends PaginationMeta {
   size: number;
   pages: number;
 }
+

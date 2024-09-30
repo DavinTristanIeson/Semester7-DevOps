@@ -30,6 +30,10 @@ async def post__register(body: AuthSchema):
     status_code=201
   )
 
+@router.post('/logout')
+async def post__logout(auth: controllers.auth.JWTAuthDependency):
+  controllers.auth.jwt_revoke(auth)
+  return ApiResult(data=None, message="You have been logged out from your account on all devices.").model_dump()
 
 __all__ = [
   "router"

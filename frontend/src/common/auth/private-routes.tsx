@@ -7,8 +7,7 @@ import { showNotification } from "@mantine/notifications";
 import Colors from "../constants/colors";
 
 // Format is the following => [key]: [is public or not]
-const PUBLIC_ROUTES: Record<NavigationRoutes, boolean> = {
-  [NavigationRoutes.Home]: false,
+const PUBLIC_ROUTES: Partial<Record<NavigationRoutes, boolean>> = {
   [NavigationRoutes.Login]: true,
   [NavigationRoutes.Register]: true,
 };
@@ -40,7 +39,7 @@ export function PrivateRoutes(props: React.PropsWithChildren) {
         message: "Redirecting to login screen...",
         loading: true,
         autoClose: DELAY_MILLIS + 1000,
-        color: Colors.Notification.Info,
+        color: Colors.Sentiment.Info,
       });
       isRelocating.current = true;
       timeoutRef.current = setTimeout(() => {

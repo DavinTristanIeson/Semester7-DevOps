@@ -4,6 +4,7 @@ from typing import Annotated
 from fastapi import Depends, Request
 import jwt
 import pydantic
+import re
 
 from common.constants import EnvironmentVariables
 from controllers.exceptions import ApiError
@@ -14,9 +15,10 @@ class SessionTokenType(Enum):
   AccessToken = 'access_token'
   RefreshToken = 'refresh_token'
 
-  def get_env(self)->EnvironmentVariables:
-    return (EnvironmentVariables.AccessTokenSecret
-      if type == SessionTokenType.AccessToken
+  @staticmethod
+  def get_env(token: "SessionTokenType")->str:
+    return EnvironmentVariables.get(EnvironmentVariables.AccessTokenSecret
+      if token == SessionTokenType.AccessToken
       else EnvironmentVariables.RefreshTokenSecret)
 
 class SessionTokenData(pydantic.BaseModel):
@@ -25,14 +27,13 @@ class SessionTokenData(pydantic.BaseModel):
 
   @staticmethod
   def decode(token: str, type: SessionTokenType)->"SessionTokenData":
-    secret = EnvironmentVariables.get(
-      type.get_env()
-    )
+    secret = SessionTokenType.get_env(type)
+    print(type, secret, token)
     content = jwt.decode(token, secret, algorithms=["HS256"])
     return SessionTokenData.model_validate(content)
 
   def encode(self, type: SessionTokenType)->str:
-    secret = type.get_env()
+    secret = SessionTokenType.get_env(type)
     return jwt.encode(self.model_dump(), secret, algorithm="HS256")
 
 
@@ -63,24 +64,23 @@ def jwt_authorize(request: Request)->SessionTokenData:
   if not header:
     raise ApiError("Expected Authorization header.", 401)
   
-  bearer, authorization = header.split(' ')
-  if bearer != "Bearer":
-    raise ApiError("Expected Bearer Authorization.", 401)
-  
-  if len(authorization) == 0:
+  authmatch: list[str] = re.findall('Bearer (.+)', header)
+  if len(authmatch) == 0:
     raise ApiError("Expected JWT token in Authorization header.", 401)
+
+  authorization: str = authmatch[0]
   
   try:
     token = SessionTokenData.decode(authorization, SessionTokenType.AccessToken)
   except jwt.DecodeError as e:
     raise ApiError("Unauthenticated.", 401)
   
-  if token.exp > datetime.datetime.now():
+  if token.exp < datetime.datetime.now(datetime.timezone.utc):
     raise ApiError("Access token is expired", 401)
   
   return token
 
-def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
+def jwt_refresh(token)->SessionTokenResource:
   with SQLSession.begin() as db:
     token_in_db = db.query(RefreshTokenModel)\
       .where(
@@ -92,6 +92,18 @@ def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
   if token_in_db is None:
     raise ApiError("Refresh token has expired", 401)    
   return jwt_create(token.user_id)
+
+def jwt_revoke(token: SessionTokenData):
+  with SQLSession.begin() as db:
+    token_in_db = db.query(RefreshTokenModel)\
+      .where(
+        RefreshTokenModel.id == token.user_id
+      )\
+      .first()
+    if token_in_db is None:
+      return
+    
+    db.delete(token_in_db)
 
 JWTAuthDependency = Annotated[SessionTokenData, Depends(jwt_authorize)]
     

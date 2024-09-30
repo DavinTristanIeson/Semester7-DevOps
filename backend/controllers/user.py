@@ -11,6 +11,8 @@ def get_user(id: int)->UserResource:
       .where(UserModel.id == id)\
       .first()
     
+    db.expunge_all()
+    
   if user is None:
     raise ApiError("User not found.", 404)
   return UserResource(id=user.id, email=user.email)

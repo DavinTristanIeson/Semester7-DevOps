@@ -6,19 +6,22 @@ import { ApiFetch } from "@/common/api/fetch";
 import { queryClient } from "@/common/api/query-client";
 import { AUTH_KEY } from "@/common/api/constants";
 import { SessionTokenModel } from "@/common/auth/api";
+import { SessionToken } from "@/common/auth/token";
 
+const ENDPOINT = 'auth';
 export const useLogin: ApiMutationFunction<LoginInput, ApiResult<SessionTokenModel>> = function (options) {
   return useMutation({
     ...options,
     mutationFn(body) {
       return ApiFetch({
         classType: SessionTokenModel,
-        url: 'auth/login',
+        url: `${ENDPOINT}/login`,
         body,
         method: 'post',
       });
     },
-    onSuccess() {
+    onSuccess(data) {
+      SessionToken.set(data.data);
       queryClient.refetchQueries({
         queryKey: AUTH_KEY
       });
@@ -32,12 +35,13 @@ export const useRegister: ApiMutationFunction<RegisterInput, ApiResult<SessionTo
     mutationFn(body) {
       return ApiFetch({
         classType: SessionTokenModel,
-        url: 'auth/register',
+        url: `${ENDPOINT}/register`,
         body,
         method: 'post',
       });
     },
-    onSuccess() {
+    onSuccess(data) {
+      SessionToken.set(data.data);
       queryClient.refetchQueries({
         queryKey: AUTH_KEY
       });
@@ -51,7 +55,7 @@ export const useLogout: ApiMutationFunction<void, ApiResult<never>> = function (
     mutationFn(body) {
       return ApiFetch({
         classType: UserModel,
-        url: 'auth/logout',
+        url: `${ENDPOINT}/logout`,
         body,
         method: 'post',
       });

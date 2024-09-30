@@ -1,5 +1,5 @@
 const Colors = {
-  Notification: {
+  Sentiment: {
     Warning: 'yellow',
     Error: 'red',
     Info: 'blue'
