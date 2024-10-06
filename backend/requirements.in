@@ -3,3 +3,5 @@ fastapi-pagination
 PyJWT
 sqlalchemy
 bcrypt
+rocketry
+python-multipart
