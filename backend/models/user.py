@@ -1,8 +1,5 @@
-import datetime
-from typing import Optional
-
 import pydantic
-from models.sql import SQLBaseModel, SQLSession
+from models.sql import SQLBaseModel
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Date, ForeignKey, Integer, String
 
