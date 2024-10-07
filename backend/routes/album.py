@@ -16,4 +16,5 @@ def post__create_album(body: AlbumSchema):
         content=ApiResult(message="Created album successfully", data = created_album.model_dump()).model_dump(),
         status_code=201
     )
-    
+
+
