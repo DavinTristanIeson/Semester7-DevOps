@@ -1,13 +1,18 @@
 import pydantic
 from sqlalchemy import Float, ForeignKey, Integer
-from models.album import AlbumFileModel
 from models.sql import SQLBaseModel
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+  from models.album import AlbumFileModel
 
 class RecognizedFaceModel(SQLBaseModel):
-  __name__ = "recognized_faces"
+  __tablename__ = "recognized_faces"
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-  file_id: Mapped[int] = mapped_column(ForeignKey(AlbumFileModel.id, ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
+  album_file_id: Mapped[int] = mapped_column(ForeignKey("album_files.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
+  album_file: Mapped["AlbumFileModel"] = relationship("AlbumFileModel", back_populates="faces")
 
   x0: Mapped[int] = mapped_column(Integer, nullable=False)
   x1: Mapped[int] = mapped_column(Integer, nullable=False)

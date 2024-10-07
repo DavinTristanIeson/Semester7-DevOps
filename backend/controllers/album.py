@@ -16,6 +16,7 @@ def query_album(id: str, db: sqlalchemy.orm.Session)->AlbumModel:
 def get_album(id: str):
   with SQLSession.begin() as db:
     album = query_album(id, db)
+    album.files
     db.expunge_all()
   return AlbumResource.from_model(album)
 
@@ -25,6 +26,7 @@ def create_album(payload: AlbumSchema, user_id: int):
     album = AlbumModel(name=payload.name, user_id=user_id)
     db.add(album)
     db.flush()
+    album.files
     
     db.expunge_all()
   return AlbumResource.from_model(album)
@@ -34,6 +36,7 @@ def update_album(id: str, payload: AlbumSchema):
     album = query_album(id, db)
     album.accessed_at = datetime.datetime.now(datetime.timezone.utc)
     album.name = payload.name
+    album.files
     db.expunge_all()
   return AlbumResource.from_model(album)
 
