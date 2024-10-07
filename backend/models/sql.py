@@ -1,6 +1,7 @@
 import uuid
+from typing import ClassVar
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, Mapped, mapped_column
 class SQLBaseModel(DeclarativeBase):
   pass
 

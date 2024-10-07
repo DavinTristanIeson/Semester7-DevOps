@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 import controllers
 from models.api import ApiResult
-from models.user import AuthSchema, UserResource
+from models.user import AuthSchema, RefreshTokenSchema, UserResource
 
 router = APIRouter() 
 
@@ -31,8 +31,9 @@ async def post__register(body: AuthSchema):
   )
 
 @router.post('/logout')
-async def post__logout(auth: controllers.auth.JWTAuthDependency):
-  controllers.auth.jwt_revoke(auth)
+async def post__logout(body: RefreshTokenSchema):
+  refresh_token = controllers.auth.SessionTokenData.decode(body.refresh_token, controllers.auth.SessionTokenType.RefreshToken)
+  controllers.auth.jwt_revoke(refresh_token)
   return ApiResult(data=None, message="You have been logged out from your account on all devices.").model_dump()
 
 __all__ = [

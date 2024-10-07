@@ -7,6 +7,7 @@ import AuthenticationForm from "@/modules/auth/form";
 import { Box, Title } from "@mantine/core";
 
 import LoginStyles from "@/modules/auth/login.module.css";
+import Colors from "@/common/constants/colors";
 
 export default function LoginPage() {
   const { mutateAsync: login } = useLogin();
@@ -21,9 +22,10 @@ export default function LoginPage() {
           if (res.message) {
             showNotification({
               message: res.message,
+              color: Colors.Sentiment.Info
             });
           }
-          router.push(NavigationRoutes.Home);
+          router.replace(NavigationRoutes.Home);
         }}
       />
       <Link href={NavigationRoutes.Register}>Register</Link>

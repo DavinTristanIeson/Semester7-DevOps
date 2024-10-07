@@ -1,6 +1,3 @@
-import datetime
-from typing import Optional
-
 import pydantic
 from models.sql import SQLBaseModel, SQLSession
 from sqlalchemy.orm import Mapped, mapped_column, Relationship, relationship

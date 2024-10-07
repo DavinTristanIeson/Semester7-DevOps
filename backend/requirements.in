@@ -1,5 +1,8 @@
 fastapi[standard]
 fastapi-pagination
 PyJWT
-sqlalchemy
+sqlalchemy[asyncio]
 bcrypt
+rocketry
+python-multipart
+aiofiles

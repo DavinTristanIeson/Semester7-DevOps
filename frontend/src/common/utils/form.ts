@@ -1,5 +1,6 @@
 import { showNotification } from '@mantine/notifications';
 import { UseFormReturn, UseFormSetError } from 'react-hook-form';
+import Colors from '../constants/colors';
 
 export function formSetErrors(
   errors: { [key: string]: any },
@@ -32,6 +33,28 @@ export function formSetErrors(
   });
 };
 
+export function handleErrorFn<T extends (...args: any) => any>(fn: T): T {
+  return (async function (...args: any[]) {
+    try {
+      const result = await fn(...args);
+      return result;
+    } catch (e: any){
+      console.error(e);
+      if (e.message){
+        showNotification({
+          message: e.message.toString(),
+          color: Colors.Sentiment.Error,
+        });
+      } else {
+        showNotification({
+          message: "An error has occurred during the submission of this form.",
+          color: Colors.Sentiment.Error,
+        });
+      }
+    }
+  }) as T;
+}
+
 export function handleFormSubmission<T extends (...args: any) => any>(fn: T, form: UseFormReturn<any>) {
   return form.handleSubmit((async (...args: any[]) => {
     try {
@@ -42,12 +65,12 @@ export function handleFormSubmission<T extends (...args: any) => any>(fn: T, for
       if (e.message){
         showNotification({
           message: e.message.toString(),
-          color: 'red',
+          color: Colors.Sentiment.Error,
         });
       } else {
         showNotification({
           message: "An error has occurred during the submission of this form.",
-          color: 'red',
+          color: Colors.Sentiment.Error,
         });
       }
       if (e.errors){

@@ -9,5 +9,7 @@ class EnvironmentVariables(str, Enum):
 
   @staticmethod
   def get(env: "EnvironmentVariables")->str:
-    print(env.value, os.getenv(env.value))
     return cast(str, os.getenv(env.value))
+  
+class FilePaths:
+  UserFiles = 'user_files'
