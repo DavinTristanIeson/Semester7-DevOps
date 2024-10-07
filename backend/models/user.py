@@ -3,16 +3,17 @@ from typing import Optional
 
 import pydantic
 from models.sql import SQLBaseModel, SQLSession
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, Relationship, relationship
 from sqlalchemy import Date, ForeignKey, Integer, String
 
 # Models
 class UserModel(SQLBaseModel):
-  __tablename__ = "accounts"
+  __tablename__ = "users"
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
   email: Mapped[str] = mapped_column(String(255))
   # hashed
   password: Mapped[bytes] = mapped_column(String(255))
+  albums: Relationship = relationship('AlbumModel', backref='user')
 
 class RefreshTokenModel(SQLBaseModel):
   __tablename__ = "refresh_tokens"
@@ -25,6 +26,10 @@ class RefreshTokenModel(SQLBaseModel):
 class UserResource(pydantic.BaseModel):
   id: int
   email: str
+  
+  @staticmethod
+  def from_model(model: UserModel)->"UserResource":
+    return UserResource(id=model.id, email=model.email)
 
 class SessionTokenResource(pydantic.BaseModel):
   access_token: str

@@ -1,5 +1,6 @@
+import uuid
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column
 class SQLBaseModel(DeclarativeBase):
   pass
 
@@ -7,8 +8,12 @@ class SQLBaseModel(DeclarativeBase):
 engine = sqlalchemy.create_engine('sqlite:///database.db', connect_args={"check_same_thread": False})
 SQLSession = sessionmaker(engine, autocommit=False, autoflush=False)
 
+def UUID_column():
+  return mapped_column(sqlalchemy.String(36), unique=True, default=lambda: uuid.uuid4().hex, nullable=False)
+
 __all__ = [
   "SQLBaseModel",
   "engine",
-  "SQLSession"
+  "SQLSession",
+  "UUID_column"
 ]
