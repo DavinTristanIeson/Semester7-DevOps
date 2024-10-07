@@ -1,0 +1,26 @@
+.gallery {
+  margin: 50px;
+
+  height: 100%;
+  /* background-color: blueviolet; */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.album {
+  width: 300px;
+  height: 330px;
+  margin: 20px;
+  padding: 20px 0px;
+  background-color: beige;
+  display: flex;
+  justify-content: center;
+}
+
+.cover-image {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  object-position: center;
+}

@@ -1,0 +1,19 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: dimgray;
+  padding: 10px 20px;
+  font-style: italic;
+  color: beige;
+}
+
+.logout-button {
+  background-color: dimgray;
+  font-size: 20px;
+  color: beige;
+}
+
+.logout-button:hover {
+  color: gray;
+}
