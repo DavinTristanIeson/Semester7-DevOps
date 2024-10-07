@@ -28,6 +28,7 @@ export default function RegisterPage() {
           <TextInput
             label="Name"
             placeholder="Enter Name"
+            style={{ width: "400px", marginTop: "20px" }}
           />
           <AuthenticationForm
             onSubmit={async (values) => {
