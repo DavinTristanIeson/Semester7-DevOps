@@ -38,3 +38,4 @@ class RefreshTokenSchema(pydantic.BaseModel):
 class AuthSchema(pydantic.BaseModel):
   email: pydantic.EmailStr
   password: str = pydantic.Field(min_length=8)
+  
