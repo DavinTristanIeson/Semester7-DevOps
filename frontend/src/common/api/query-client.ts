@@ -1,9 +1,9 @@
 import { QueryClient } from '@tanstack/react-query';
 
-import { ExtendedApiResult } from './model';
+import { PaginatedApiResult } from './model';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getNextPageParam(lastPage: ExtendedApiResult<any[]>) {
+function getNextPageParam(lastPage: PaginatedApiResult<any[]>) {
   return lastPage.page < lastPage.pages
     ? lastPage.page + 1
     : undefined;

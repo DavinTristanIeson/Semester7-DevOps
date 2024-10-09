@@ -1,8 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Flex, PasswordInput, TextInput } from "@mantine/core";
-import { Controller, Form, useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { AuthFormType, AuthFormSchema } from "./form-type";
-import { showNotification } from "@mantine/notifications";
 import { handleFormSubmission } from "@/common/utils/form";
 import FormStyles from "@/styles/form.module.css";
 
@@ -24,7 +23,11 @@ export default function AuthenticationForm(props: AuthenticationFormProps) {
   const handleSubmit = handleFormSubmission(onSubmit, form);
 
   return (
-    <Form control={form.control} onSubmit={handleSubmit} className={FormStyles["form-box"]}>
+    <Form
+      control={form.control}
+      onSubmit={handleSubmit}
+      className={FormStyles["form-box"]}
+    >
       <Flex direction={"column"} rowGap={16}>
         <TextInput
           {...form.register("email")}

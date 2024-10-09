@@ -5,7 +5,25 @@
   flex-wrap: wrap;
 }
 
-.album {
+.album__cover {
+  padding: 0px 10px;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.album__cover__image {
+  width: 110px;
+  height: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: center;
+}
+
+
+.album__card {
   width: 300px;
   height: 330px;
   margin: 20px;
@@ -17,22 +35,6 @@
   justify-content: center;
 }
 
-.cover {
-  padding: 0px 10px;
-  width: 90%;
-  height: 90%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.cover-image {
-  width: 110px;
-  height: 110px;
-  border-radius: 10px;
-  object-fit: cover;
-  object-position: center;
-}
-
-.album-name {
+.album__title {
+  font-family: monospace;
 }

@@ -1,5 +1,5 @@
 import { ApiMutationFunction } from "@/common/api/fetch-types";
-import { AlbumModel, AlbumMutationInput } from "./model";
+import { AlbumDeleteFilesInput, AlbumModel, AlbumMutationInput, AlbumUploadFilesInput } from "./model";
 import { useMutation } from "@tanstack/react-query";
 import { ApiFetch } from "@/common/api/fetch";
 import { IdInput, UpdateInput } from "../common/model";
@@ -70,6 +70,50 @@ export const useDeleteAlbum: ApiMutationFunction<IdInput, ApiResult<never>> = fu
       queryClient.removeQueries({
         queryKey: AlbumQueryKeys.detail({
           id: variables.id,
+        }),
+      });
+    },
+  });
+}
+
+export const useUploadAlbumFiles: ApiMutationFunction<AlbumUploadFilesInput, ApiResult<never>> = function (options) {
+  return useMutation({
+    ...options,
+    mutationFn(body) {
+      const formData = new FormData();
+      for (const file of body.files) {
+        formData.append("files", file);
+      }
+      return ApiFetch({
+        method: 'post',
+        url: `${ENDPOINT}/${body.id}/files`,
+        formData,
+      });
+    },
+    onSuccess(_, variables) {
+      queryClient.invalidateQueries({
+        queryKey: AlbumQueryKeys.detail({
+          id: variables.id
+        }),
+      });
+    },
+  });
+}
+
+export const useDeleteAlbumFiles: ApiMutationFunction<AlbumDeleteFilesInput, ApiResult<never>> = function (options) {
+  return useMutation({
+    ...options,
+    mutationFn(body) {
+      return ApiFetch({
+        method: 'delete',
+        url: `${ENDPOINT}/${body.id}/files`,
+        body: body.ids,
+      });
+    },
+    onSuccess(_, variables) {
+      queryClient.invalidateQueries({
+        queryKey: AlbumQueryKeys.detail({
+          id: variables.id
         }),
       });
     },

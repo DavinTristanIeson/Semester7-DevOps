@@ -1,0 +1,38 @@
+import { useRouter } from "next/router";
+import { Box, Title } from "@mantine/core";
+
+import AuthStyles from "./styles/auth.module.css";
+import React from "react";
+
+export default function LoginLayout(props: React.PropsWithChildren) {
+  return (
+    <Box className={AuthStyles["full-screen-box"]}>
+      <Box className={AuthStyles["container-box"]}>
+        <Box className={AuthStyles["login-image-box"]}>
+          <Title order={1} style={{ fontFamily: "monospace" }}>
+            PARALLEL
+          </Title>
+          <Box className={AuthStyles["quote-box"]}>
+            <Title order={2}>Capturing Moments,</Title>
+            <Title order={2}>Creating Memories</Title>
+          </Box>
+        </Box>
+        {props.children}
+      </Box>
+    </Box>
+  );
+}
+
+interface LoginBoxProps {
+  title: string;
+  children?: React.ReactNode;
+}
+
+export function LoginBox(props: LoginBoxProps) {
+  return (
+    <Box className={AuthStyles["content-box"]}>
+      <Title order={1}>{props.title}</Title>
+      {props.children}
+    </Box>
+  );
+}

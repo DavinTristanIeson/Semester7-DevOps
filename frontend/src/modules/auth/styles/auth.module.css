@@ -56,12 +56,16 @@
   color: dimgray;
 }
 
-.link-style {
-  text-decoration: none;
-  font-weight: bold;
-  color: dimgray;
+.form-box {
+  width: 400px;
+  margin: 20px;
 }
 
-.link-style:hover {
-  color: lightgray;
+.button {
+  height: 50px;
+  border-radius: 50px;
+  font-size: 20px;
+  background-color: dimgray;
+  color: beige;
 }
+

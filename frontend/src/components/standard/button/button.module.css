@@ -1,0 +1,9 @@
+.button__link {
+  text-decoration: none;
+  font-weight: bold;
+  color: dimgray;
+}
+
+.button__link:hover {
+  color: lightgray;
+}

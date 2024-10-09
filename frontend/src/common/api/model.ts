@@ -18,7 +18,7 @@ export interface PaginationMeta {
   pages: number;
 }
 
-export interface ExtendedApiResult<T> extends PaginationMeta {
+export interface PaginatedApiResult<T> extends PaginationMeta {
   data: T[]
   message?: string;
 

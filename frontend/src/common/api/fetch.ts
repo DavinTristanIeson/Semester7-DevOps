@@ -8,24 +8,27 @@ interface CommonQueryFunctionProps {
   url: string;
   params?: Record<string, any>;
   method: Options["method"];
-  classType: (new (...args: any) => any);
+  classType?: (new (...args: any) => any);
   body?: any;
+  formData?: FormData;
   client?: KyInstance;
 }
 
 export async function ApiFetch(props: CommonQueryFunctionProps): Promise<any> {
   const usedClient: KyInstance = props.client ?? client;
-  const clientProps: Options = {method: props.method}
+  const clientProps: Options = { method: props.method }
   if (props.params) {
     clientProps.searchParams = props.params;
   }
-  if (props.body){
+  if (props.body) {
     clientProps.json = decamelizeKeys(props.body);
+  } else if (props.formData) {
+    clientProps.body = props.formData;
   }
   try {
     const response = await usedClient(props.url, clientProps);
     const result = await response.json() as any;
-    const data = plainToInstance(props.classType, result.data)
+    const data = props.classType ? plainToInstance(props.classType, result.data) : result.data;
     return {
       data,
       ...result

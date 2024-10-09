@@ -8,7 +8,7 @@ export default function AlbumCreatePage() {
   return (
     <div>
       <Title order={1}>Album Create</Title>
-      <Alert color={Colors.Sentiment.Warning} my={16}>
+      <Alert color={Colors.sentimentWarning} my={16}>
         This album will be removed after thirty days of inactivity (e.g.:
         viewing, uploading, downloading).
       </Alert>

@@ -38,17 +38,17 @@ export function handleErrorFn<T extends (...args: any) => any>(fn: T): T {
     try {
       const result = await fn(...args);
       return result;
-    } catch (e: any){
+    } catch (e: any) {
       console.error(e);
-      if (e.message){
+      if (e.message) {
         showNotification({
           message: e.message.toString(),
-          color: Colors.Sentiment.Error,
+          color: Colors.sentimentError,
         });
       } else {
         showNotification({
           message: "An error has occurred during the submission of this form.",
-          color: Colors.Sentiment.Error,
+          color: Colors.sentimentError,
         });
       }
     }
@@ -60,20 +60,20 @@ export function handleFormSubmission<T extends (...args: any) => any>(fn: T, for
     try {
       const result = await fn(...args);
       return result;
-    } catch (e: any){
+    } catch (e: any) {
       console.error(e);
-      if (e.message){
+      if (e.message) {
         showNotification({
           message: e.message.toString(),
-          color: Colors.Sentiment.Error,
+          color: Colors.sentimentError,
         });
       } else {
         showNotification({
           message: "An error has occurred during the submission of this form.",
-          color: Colors.Sentiment.Error,
+          color: Colors.sentimentError,
         });
       }
-      if (e.errors){
+      if (e.errors) {
         formSetErrors(e.errors, form.setError);
       }
     }

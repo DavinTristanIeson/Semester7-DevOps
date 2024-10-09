@@ -3,6 +3,7 @@ import { AlbumModel } from "./model";
 import { ApiFetch } from "@/common/api/fetch";
 import { ApiQueryFunction } from "@/common/api/fetch-types";
 import { IdInput } from "../common/model";
+import { PaginatedApiResult } from "@/common/api/model";
 
 export const AlbumQueryKeys = {
   listKey: 'getAlbums',
@@ -17,7 +18,7 @@ export const AlbumQueryKeys = {
 
 const ENDPOINT = 'albums';
 
-export const useGetAlbums: ApiQueryFunction<never, AlbumModel> = function (options) {
+export const useGetAlbums: ApiQueryFunction<never, PaginatedApiResult<AlbumModel>> = function (options) {
   return useQuery({
     ...options,
     queryKey: AlbumQueryKeys.list(),
