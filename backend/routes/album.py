@@ -1,5 +1,6 @@
 from typing import Sequence
 from fastapi import APIRouter, File, UploadFile
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
@@ -28,7 +29,7 @@ def get__albums(auth: JWTAuthDependency, db: SQLSessionDependency)->PaginatedApi
 def post__album(body: AlbumSchema, auth: JWTAuthDependency):
   album = controllers.album.create_album(body, auth.user_id)
   return JSONResponse(
-    content=ApiResult(message="Created album successfully", data = album).model_dump(),
+    content=jsonable_encoder(ApiResult(message="Created album successfully", data = album)),
     status_code=201
   )
 

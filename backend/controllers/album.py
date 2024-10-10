@@ -26,7 +26,6 @@ def create_album(payload: AlbumSchema, user_id: int):
     album = AlbumModel(name=payload.name, user_id=user_id)
     db.add(album)
     db.flush()
-    album.files
     
     db.expunge_all()
   return AlbumResource.from_model(album)

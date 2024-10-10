@@ -10,7 +10,8 @@ const Colors = {
 
   sentimentWarning: 'yellow',
   sentimentError: 'red',
-  sentimentInfo: 'blue'
+  sentimentInfo: 'blue',
+  sentimentSuccess: 'green'
 }
 
 export default Colors;

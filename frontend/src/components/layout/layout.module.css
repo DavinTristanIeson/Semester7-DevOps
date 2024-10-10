@@ -12,16 +12,6 @@
   color: beige;
 }
 
-.navbar__logout-button {
-  background-color: dimgray;
-  font-size: 20px;
-  color: beige;
-}
-
-.navbar__logout-button:hover {
-  color: gray;
-}
-
 .error__root {
   background-color: rgba(0, 0, 0, 0.4);
 }

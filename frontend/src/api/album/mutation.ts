@@ -7,7 +7,7 @@ import { ApiResult } from "@/common/api/model";
 import { queryClient } from "@/common/api/query-client";
 import { AlbumQueryKeys } from "./query";
 
-const ENDPOINT = 'album';
+const ENDPOINT = 'albums';
 
 export const useCreateAlbum: ApiMutationFunction<AlbumMutationInput, ApiResult<AlbumModel>> = function (options) {
   return useMutation({

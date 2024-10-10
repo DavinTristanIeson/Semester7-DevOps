@@ -1,5 +1,5 @@
 import { PaginationMeta } from "@/common/api/model";
-import { Pagination as RawPagination } from "@mantine/core";
+import { Pagination as RawPagination, Select } from "@mantine/core";
 import React from "react";
 
 interface PaginationSetupProps {
@@ -21,12 +21,11 @@ interface PaginationProps extends PaginationSetupProps {
 
 export default function Pagination(props: PaginationProps) {
   return (
-    <div>
-      <RawPagination
-        total={props.meta.pages}
-        value={props.page - 1}
-        onChange={props.setPage}
-      />
-    </div>
+    <RawPagination
+      total={props.meta.pages}
+      value={props.page - 1}
+      onChange={props.setPage}
+      p={16}
+    />
   );
 }

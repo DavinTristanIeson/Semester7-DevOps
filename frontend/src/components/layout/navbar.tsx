@@ -1,4 +1,4 @@
-import { Box, Button, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Title } from "@mantine/core";
 import LayoutStyles from "./layout.module.css";
 import { handleErrorFn } from "@/common/utils/form";
 import { useLogout } from "@/api/auth";
@@ -7,32 +7,59 @@ import Colors from "@/common/constants/colors";
 import { useRouter } from "next/router";
 import NavigationRoutes from "@/common/constants/routes";
 import { SessionToken } from "@/common/auth/token";
+import React from "react";
+import { ArrowLeft } from "@phosphor-icons/react";
+import PromiseButton from "../standard/button/promise";
 
-export default function DashboardNavigationBar() {
+interface DashboardNavigationLink {
+  label: string;
+  onClick?(): void;
+  href?: string;
+}
+interface DashboardNavigationBarProps {
+  title?: string;
+  back?: boolean;
+  actions?: React.ReactNode;
+  links?: DashboardNavigationLink[];
+}
+
+export default function DashboardNavigationBar(
+  props: DashboardNavigationBarProps
+) {
   const router = useRouter();
-  const { mutateAsync: logout, isPending } = useLogout();
   return (
     <Box className={LayoutStyles["navbar"]}>
-      <Title order={1} style={{ fontFamily: "monospace" }}>
-        PARALLEL
-      </Title>
-      <Button
-        className={LayoutStyles["navbar__logout-button"]}
-        loading={isPending}
-        onClick={handleErrorFn(async () => {
-          const res = await logout();
-          if (res.message) {
-            showNotification({
-              message: res.message,
-              color: Colors.sentimentInfo,
-            });
-          }
-          router.replace(NavigationRoutes.Login);
-          SessionToken.clear();
-        })}
-      >
-        Logout
-      </Button>
+      <Flex gap={24} align="center">
+        {props.back && (
+          <ActionIcon
+            variant="transparent"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            <ArrowLeft size={32} color={Colors.foregroundPrimary} />
+          </ActionIcon>
+        )}
+        <Title order={1} style={{ fontFamily: "monospace" }}>
+          {props.title ?? "PARALLEL"}
+        </Title>
+      </Flex>
+      {props.actions ??
+        props.links?.map((link) => (
+          <PromiseButton
+            onClick={
+              link.onClick
+                ? handleErrorFn(link.onClick)
+                : link.href
+                ? () => {
+                    router.push(link.href!);
+                  }
+                : undefined
+            }
+          >
+            {link.label}
+          </PromiseButton>
+        ))}
     </Box>
   );
 }
