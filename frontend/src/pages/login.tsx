@@ -33,7 +33,7 @@ export default function LoginPage() {
         <Text>
           Don't have an account?
           <TextLink href={NavigationRoutes.Register} span>
-            Login
+            Register
           </TextLink>
         </Text>
       </LoginBox>

@@ -14,7 +14,7 @@ class UserModel(SQLBaseModel):
   email: Mapped[str] = mapped_column(String(255))
   # hashed
   password: Mapped[bytes] = mapped_column(String(255))
-  albums: Mapped["AlbumModel"] = relationship('AlbumModel', backref='user')
+  albums: Mapped[list["AlbumModel"]] = relationship('AlbumModel', back_populates='user')
 
 class RefreshTokenModel(SQLBaseModel):
   __tablename__ = "refresh_tokens"

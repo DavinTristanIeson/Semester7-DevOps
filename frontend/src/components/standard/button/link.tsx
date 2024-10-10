@@ -14,7 +14,7 @@ export default function TextLink(props: TextLinkProps) {
     <Link
       {...props}
       className={classNames(
-        ButtonStyles["button--link"],
+        ButtonStyles["button__link"],
         props.span ? "inline-block" : undefined,
         props.className
       )}

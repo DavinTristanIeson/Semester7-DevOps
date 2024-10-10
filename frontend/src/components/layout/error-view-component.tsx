@@ -22,11 +22,11 @@ export default function ErrorViewComponent(props: ErrorViewComponentProps) {
       h="100%"
       className={LayoutStyles["error__root"]}
     >
-      <Title order={3} c={Colors.foregroundInversePrimary}>
+      <Title order={3} c={Colors.textInverse}>
         {title ?? "Failed to load content"}
       </Title>
       {message && (
-        <Text textVariant="regular" textColor="foregroundInversePrimary">
+        <Text variant="regular" color="textInverse">
           {message}
         </Text>
       )}

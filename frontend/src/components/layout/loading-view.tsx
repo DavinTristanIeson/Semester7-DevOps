@@ -34,7 +34,7 @@ export default function LoadingViewComponent(props: LoadingViewComponentProps) {
     >
       {children ?? (
         <div>
-          <Loader size={40} c={colors.foregroundPrimary} />
+          <Loader size={40} c={colors.text} />
         </div>
       )}
     </Flex>

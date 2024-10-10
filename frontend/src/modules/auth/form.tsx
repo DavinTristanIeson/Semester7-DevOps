@@ -1,9 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Flex, PasswordInput, TextInput } from "@mantine/core";
-import { Form, useForm } from "react-hook-form";
+import { Box, Flex, PasswordInput, TextInput } from "@mantine/core";
+import { Form, FormProvider, useForm } from "react-hook-form";
 import { AuthFormType, AuthFormSchema } from "./form-type";
 import { handleFormSubmission } from "@/common/utils/form";
-import FormStyles from "@/styles/form.module.css";
+import AuthStyles from './auth.module.css';
+import Button from "@/components/standard/button/base";
+import SubmitButton from "@/components/standard/button/submit";
+import FormWrapper from "@/components/utility/form/wrapper";
 
 interface AuthenticationFormProps {
   onSubmit(values: AuthFormType): void;
@@ -20,15 +23,9 @@ export default function AuthenticationForm(props: AuthenticationFormProps) {
     resolver: yupResolver(AuthFormSchema()),
   });
 
-  const handleSubmit = handleFormSubmission(onSubmit, form);
-
   return (
-    <Form
-      control={form.control}
-      onSubmit={handleSubmit}
-      className={FormStyles["form-box"]}
-    >
-      <Flex direction={"column"} rowGap={16}>
+    <FormWrapper form={form} onSubmit={onSubmit}>
+      <Flex direction={"column"} rowGap={16} w={400} m={20}>
         <TextInput
           {...form.register("email")}
           error={form.formState.errors.email?.message}
@@ -42,10 +39,11 @@ export default function AuthenticationForm(props: AuthenticationFormProps) {
           placeholder="Enter password"
           style={{ marginBottom: "20px" }}
         />
-        <Button fullWidth type="submit" className={FormStyles["button"]}>
+        <Box h={20} />
+        <SubmitButton>
           Submit
-        </Button>
+        </SubmitButton>
       </Flex>
-    </Form>
+    </FormWrapper>
   );
 }

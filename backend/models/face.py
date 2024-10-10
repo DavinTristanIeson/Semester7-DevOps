@@ -12,7 +12,7 @@ class RecognizedFaceModel(SQLBaseModel):
   __tablename__ = "recognized_faces"
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
   album_file_id: Mapped[int] = mapped_column(ForeignKey("album_files.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
-  album_file: Mapped["AlbumFileModel"] = relationship("AlbumFileModel", back_populates="faces")
+  album_file: Mapped["AlbumFileModel"] = relationship("AlbumFileModel", back_populates="faces", foreign_keys="RecognizedFaceModel.album_file_id")
 
   x0: Mapped[int] = mapped_column(Integer, nullable=False)
   x1: Mapped[int] = mapped_column(Integer, nullable=False)

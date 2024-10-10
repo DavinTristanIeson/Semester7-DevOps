@@ -2,8 +2,15 @@
   text-decoration: none;
   font-weight: bold;
   color: dimgray;
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
 }
 
 .button__link:hover {
-  color: lightgray;
+  color: orange;
+}
+
+.button--submit {
+  height: 50px;
+  font-size: 20px;
 }

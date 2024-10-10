@@ -53,7 +53,7 @@ export function DefaultPullRefreshProgressIndicator(
         sections={[
           {
             value: Math.max(0, Math.min(100, percentage * 100)),
-            color: Colors.foregroundPrimary,
+            color: Colors.text,
           },
         ]}
       />

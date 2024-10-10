@@ -1,7 +1,13 @@
 const Colors = {
-  foregroundPrimary: 'black',
-  foregroundInversePrimary: 'white',
-  foregroundTertiary: 'grey',
+  text: 'black',
+  textInverse: 'white',
+
+  foregroundPrimary: 'beige',
+  foregroundDull: 'grey',
+
+  backgroundScreen: 'lightgray',
+  backgroundPrimary: 'dimgray',
+
   sentimentWarning: 'yellow',
   sentimentError: 'red',
   sentimentInfo: 'blue'

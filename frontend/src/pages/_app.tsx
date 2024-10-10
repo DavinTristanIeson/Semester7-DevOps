@@ -12,8 +12,8 @@ import { queryClient } from "@/common/api/query-client";
 import { PrivateRoutes } from "@/common/auth/private-routes";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import mantineTheme from "@/common/constants/theme";
 
-const mantineTheme = createTheme({});
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>

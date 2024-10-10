@@ -4,9 +4,9 @@ import { TypographyVariants } from "./variants";
 import Colors from "@/common/constants/colors";
 import { classNames } from "@/common/utils/styles";
 
-export interface TextProps extends Omit<RawTextProps, "children"> {
-  textVariant?: keyof typeof TypographyVariants;
-  textColor?: keyof typeof Colors;
+export interface TextProps extends RawTextProps {
+  variant?: keyof typeof TypographyVariants;
+  color?: keyof typeof Colors;
   wrap?: boolean;
 
   isResponsive?: boolean;
@@ -16,8 +16,8 @@ export interface TextProps extends Omit<RawTextProps, "children"> {
 const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
   const {
     className,
-    textVariant = "regular",
-    textColor = "foregroundPrimary",
+    variant: textVariant = "regular",
+    color: textColor = "text",
     style,
     wrap,
     isResponsive = false,

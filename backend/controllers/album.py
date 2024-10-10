@@ -12,7 +12,7 @@ def query_album(id: str, db: sqlalchemy.orm.Session)->AlbumModel:
   if album is None:
     raise ApiError(f"Album with id {id} doesn't exist", 404)
   return album
-  
+
 def get_album(id: str):
   with SQLSession.begin() as db:
     album = query_album(id, db)

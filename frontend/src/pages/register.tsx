@@ -18,11 +18,6 @@ export default function RegisterPage() {
   return (
     <LoginLayout>
       <LoginBox title="Create an Account">
-        <TextInput
-          label="Name"
-          placeholder="Enter Name"
-          style={{ width: "400px", marginTop: "20px" }}
-        />
         <AuthenticationForm
           onSubmit={async (values) => {
             const res = await register(values);

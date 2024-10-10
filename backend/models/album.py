@@ -21,20 +21,19 @@ class AlbumModel(SQLBaseModel):
   accessed_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc), nullable=False)
   user_id: Mapped[int] = mapped_column(Integer, ForeignKey(UserModel.id, ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
 
-  user: Mapped[UserModel] = relationship('UserModel', back_populates="albums")
+  user: Mapped[UserModel] = relationship('UserModel', back_populates="albums", foreign_keys="AlbumModel.user_id")
   files: Mapped[list["AlbumFileModel"]] = relationship('AlbumFileModel', back_populates="album")
 
 class AlbumFileModel(SQLBaseModel):
   __tablename__ = "album_files"
   id: Mapped[int] = mapped_column(Integer, primary_key=True)
   business_id: Mapped[str] = UUID_column()
-  face_id: Mapped[int] = mapped_column(ForeignKey(RecognizedFaceModel.id, onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
   file_id: Mapped[int] = mapped_column(ForeignKey(FileModel.id, onupdate="CASCADE", ondelete="SET NULL"), nullable=False)
   album_id: Mapped[int] = mapped_column(ForeignKey(AlbumModel.id, onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
 
-  album: Mapped[AlbumModel] = relationship('AlbumModel')
+  album: Mapped[AlbumModel] = relationship('AlbumModel', foreign_keys="AlbumFileModel.album_id")
   faces: Mapped[list[RecognizedFaceModel]] = relationship('RecognizedFaceModel', back_populates="album_file")
-  file: Mapped[FileModel] = relationship('FileModel')
+  file: Mapped[FileModel] = relationship('FileModel', foreign_keys="AlbumFileModel.file_id")
 
 # Resource    
 class AlbumResource(pydantic.BaseModel):
