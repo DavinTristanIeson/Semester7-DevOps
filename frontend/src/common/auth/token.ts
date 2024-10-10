@@ -1,10 +1,14 @@
 import { SessionTokenModel, mutateRefreshToken } from '@/common/auth/api';
 import { LocalStorageKeys } from '@/common/constants/browser-storage';
 import { plainToInstance } from 'class-transformer';
-import { JwtPayload, jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import throttle from 'lodash/throttle';
 
 export namespace SessionToken {
+  interface SessionTokenPayload {
+    user_id: string;
+    exp: number;
+  }
   export function get(): SessionTokenModel | undefined {
     if (typeof window === 'undefined') return undefined;
     const response = localStorage.getItem(LocalStorageKeys.Auth);
@@ -34,7 +38,7 @@ export namespace SessionToken {
   ) {
     if (!jwtToken) return true;
 
-    const decoded = jwtDecode(jwtToken) as JwtPayload;
+    const decoded = jwtDecode(jwtToken) as SessionTokenPayload;
     if (!decoded.exp) return true;
     const expiredAt = new Date(decoded.exp * 1000);
     const currentAt = new Date();

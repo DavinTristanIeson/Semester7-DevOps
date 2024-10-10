@@ -18,13 +18,5 @@ export interface PaginationMeta {
   pages: number;
 }
 
-export interface PaginatedApiResult<T> extends PaginationMeta {
-  data: T[]
-  message?: string;
-
-  total: number;
-  page: number;
-  size: number;
-  pages: number;
-}
+export interface PaginatedApiResult<T> extends PaginationMeta, ApiResult<T[]> { }
 

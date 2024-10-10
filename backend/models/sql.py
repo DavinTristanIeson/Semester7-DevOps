@@ -1,6 +1,8 @@
+from typing import Annotated
 import uuid
+from fastapi import Depends
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column, Session
 class SQLBaseModel(DeclarativeBase):
   pass
 
@@ -11,9 +13,15 @@ SQLSession = sessionmaker(engine, autocommit=False, autoflush=False)
 def UUID_column():
   return mapped_column(sqlalchemy.String(36), unique=True, default=lambda: uuid.uuid4().hex, nullable=False)
 
+def get_db():
+  return SQLSession()
+
+SQLSessionDependency = Annotated[Session, Depends(get_db)]
+
 __all__ = [
   "SQLBaseModel",
   "engine",
   "SQLSession",
-  "UUID_column"
+  "UUID_column",
+  "SQLSessionDependency",
 ]

@@ -6,6 +6,7 @@ import sqlalchemy.orm
 from controllers.exceptions import ApiError
 from models.album import AlbumFileModel, AlbumModel, AlbumResource, AlbumSchema
 from models.sql import SQLSession
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 def query_album(id: str, db: sqlalchemy.orm.Session)->AlbumModel:
   album = db.query(AlbumModel).where(AlbumModel.business_id == id).first()
@@ -14,12 +15,11 @@ def query_album(id: str, db: sqlalchemy.orm.Session)->AlbumModel:
   return album
 
 def get_album(id: str):
-  with SQLSession.begin() as db:
+  with SQLSession() as db:
     album = query_album(id, db)
     album.files
     db.expunge_all()
   return AlbumResource.from_model(album)
-
 
 def create_album(payload: AlbumSchema, user_id: int):
   with SQLSession.begin() as db:

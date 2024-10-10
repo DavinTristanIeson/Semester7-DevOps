@@ -1,22 +1,30 @@
 from typing import Sequence
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import JSONResponse
+from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy import select
 
 from controllers.auth import JWTAuthDependency
-from models.album import AlbumDeleteSchema, AlbumSchema
-from models.api import ApiResult
+from models.album import AlbumDeleteSchema, AlbumModel, AlbumResource, AlbumSchema
+from models.api import ApiResult, PaginatedApiResult
 
 import controllers
+from models.sql import SQLSessionDependency
 
 
 router = APIRouter()
 
 @router.get('/[id]')
-def get__album(id: str, body: AlbumSchema, auth: JWTAuthDependency):
+def get__album(id: str, auth: JWTAuthDependency):
   album = controllers.album.get_album(id)
   return ApiResult(data=album, message=None)
 
-@router.post('/')
+
+@router.get('')
+def get__albums(auth: JWTAuthDependency, db: SQLSessionDependency)->PaginatedApiResult[AlbumResource]:
+  return paginate(db, select(AlbumModel).order_by(AlbumModel.accessed_at), transformer=lambda page: list(map(AlbumResource.from_model, page)))
+
+@router.post('')
 def post__album(body: AlbumSchema, auth: JWTAuthDependency):
   album = controllers.album.create_album(body, auth.user_id)
   return JSONResponse(

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlbumModel } from "./model";
 import { ApiFetch } from "@/common/api/fetch";
 import { ApiQueryFunction } from "@/common/api/fetch-types";
-import { IdInput } from "../common/model";
+import { IdInput, PaginatedInput } from "../common/model";
 import { PaginatedApiResult } from "@/common/api/model";
 
 export const AlbumQueryKeys = {
@@ -18,12 +18,13 @@ export const AlbumQueryKeys = {
 
 const ENDPOINT = 'albums';
 
-export const useGetAlbums: ApiQueryFunction<never, PaginatedApiResult<AlbumModel>> = function (options) {
+export const useGetAlbums: ApiQueryFunction<PaginatedInput, PaginatedApiResult<AlbumModel>> = function (input, options) {
   return useQuery({
     ...options,
     queryKey: AlbumQueryKeys.list(),
     queryFn() {
       return ApiFetch({
+        params: input,
         classType: AlbumModel,
         method: 'get',
         url: ENDPOINT,

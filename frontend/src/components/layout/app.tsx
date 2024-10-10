@@ -17,9 +17,8 @@ export default function AppLayout(props: AppLayoutProps) {
   return (
     <Flex h="100%" direction="column">
       <header className={LayoutStyles["app__header--maxh"]}>{Header}</header>
-      <main ref={combineRef} className="flex-1">
-        {children}
-        <ScrollArea scrollbars="y"></ScrollArea>
+      <main ref={combineRef} className="flex-1 relative">
+        <ScrollArea scrollbars="y">{children}</ScrollArea>
       </main>
     </Flex>
   );

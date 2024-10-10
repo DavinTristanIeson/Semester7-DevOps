@@ -17,8 +17,9 @@ async def post__login(body: AuthSchema):
   return ApiResult(data=controllers.auth.jwt_create(user.id), message=None)
 
 @router.post('/refresh')
-async def post__refresh(auth: controllers.auth.JWTAuthDependency):    
-  return ApiResult(data=controllers.auth.jwt_refresh(auth), message="Refreshed token successfully.")
+async def post__refresh(token: RefreshTokenSchema):
+  session_token = controllers.auth.SessionTokenData.decode(token.refresh_token, controllers.auth.SessionTokenType.RefreshToken)
+  return ApiResult(data=controllers.auth.jwt_refresh(session_token), message="Refreshed token successfully.")
 
 @router.post('/register')
 async def post__register(body: AuthSchema):

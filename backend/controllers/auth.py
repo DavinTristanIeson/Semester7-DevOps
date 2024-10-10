@@ -79,14 +79,15 @@ def jwt_authorize(request: Request)->SessionTokenData:
   
   return token
 
-def jwt_refresh(token)->SessionTokenResource:
-  with SQLSession.begin() as db:
+def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
+  with SQLSession() as db:
     token_in_db = db.query(RefreshTokenModel)\
       .where(
         (RefreshTokenModel.id == token.user_id) &
-        (token.exp < RefreshTokenModel.expiry)
+        (datetime.datetime.now(datetime.timezone.utc) < RefreshTokenModel.expiry)
       )\
       .first()
+    db.expunge_all()
     
   if token_in_db is None:
     raise ApiError("Refresh token has expired", 401)    

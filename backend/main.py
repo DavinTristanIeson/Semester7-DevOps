@@ -5,6 +5,7 @@ dotenv.load_dotenv()
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import add_pagination
 
 import controllers
 import routes
@@ -17,6 +18,8 @@ app = FastAPI()
 controllers.exceptions.register_error_handlers(app)
 
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], allow_headers=['*'])
+add_pagination(app)
+
 app.include_router(routes.auth.router, prefix='/api/auth')
 app.include_router(routes.album.router, prefix='/api/albums')
 # https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html
