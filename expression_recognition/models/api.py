@@ -1,14 +1,15 @@
 
 from typing import Any, Generic, Optional, TypeVar
+from fastapi.encoders import jsonable_encoder
 import pydantic
-
-from fastapi import Query
 
 T = TypeVar("T")
 
 class ApiResult(pydantic.BaseModel, Generic[T]):
   data: T
   message: Optional[str]
+  def as_json(self):
+    return jsonable_encoder(self)
 
 class ApiErrorResult(pydantic.BaseModel):
   message: str

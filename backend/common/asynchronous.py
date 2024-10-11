@@ -1,3 +1,4 @@
+import httpx
 from rocketry import Rocketry
 import asyncio
 

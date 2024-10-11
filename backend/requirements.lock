@@ -4,8 +4,6 @@
 #
 #    pip-compile --output-file=requirements.lock requirements.in
 #
-aiofiles==24.1.0
-    # via -r requirements.in
 annotated-types==0.7.0
     # via pydantic
 anyio==4.6.0
@@ -37,8 +35,6 @@ fastapi[standard]==0.115.0
     # via -r requirements.in
 fastapi-cli[standard]==0.0.5
     # via fastapi
-fastapi-pagination==0.12.27
-    # via -r requirements.in
 greenlet==3.1.1
     # via sqlalchemy
 h11==0.14.0
@@ -50,7 +46,9 @@ httpcore==1.0.5
 httptools==0.6.1
     # via uvicorn
 httpx==0.27.2
-    # via fastapi
+    # via
+    #   -r requirements.in
+    #   fastapi
 idna==3.10
     # via
     #   anyio
@@ -66,8 +64,8 @@ mdurl==0.1.2
     # via markdown-it-py
 pydantic==2.9.2
     # via
+    #   -r requirements.in
     #   fastapi
-    #   fastapi-pagination
     #   redbird
     #   rocketry
 pydantic-core==2.23.4
@@ -79,7 +77,9 @@ pyjwt==2.9.0
 python-dateutil==2.9.0.post0
     # via rocketry
 python-dotenv==1.0.1
-    # via uvicorn
+    # via
+    #   -r requirements.in
+    #   uvicorn
 python-multipart==0.0.10
     # via
     #   -r requirements.in
@@ -110,7 +110,6 @@ typing-extensions==4.12.2
     # via
     #   anyio
     #   fastapi
-    #   fastapi-pagination
     #   pydantic
     #   pydantic-core
     #   redbird

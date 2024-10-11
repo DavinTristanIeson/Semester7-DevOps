@@ -1,6 +1,7 @@
 fastapi[standard]
+httpx
+pydantic
 python-multipart
-rocketry
-aiofiles
 python-dotenv
 PyJWT
+aiofiles

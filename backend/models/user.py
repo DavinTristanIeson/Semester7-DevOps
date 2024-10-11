@@ -1,11 +1,7 @@
-from typing import TYPE_CHECKING
 import pydantic
 from models.sql import SQLBaseModel, UUID_column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Date, ForeignKey, Integer, String
-
-if TYPE_CHECKING:
-  from models.album import AlbumModel
 
 # Models
 class UserModel(SQLBaseModel):
@@ -15,7 +11,6 @@ class UserModel(SQLBaseModel):
   email: Mapped[str] = mapped_column(String(255))
   # hashed
   password: Mapped[bytes] = mapped_column(String(255))
-  albums: Mapped[list["AlbumModel"]] = relationship('AlbumModel', back_populates='user')
 
 class RefreshTokenModel(SQLBaseModel):
   __tablename__ = "refresh_tokens"
