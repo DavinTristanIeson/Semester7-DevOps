@@ -6,7 +6,7 @@ from models.user import AuthSchema, UserModel, UserResource
 import bcrypt
 
 def get_user(id: int)->UserResource:
-  with SQLSession.begin() as db:
+  with SQLSession() as db:
     user = db.query(UserModel)\
       .where(UserModel.id == id)\
       .first()
@@ -15,10 +15,10 @@ def get_user(id: int)->UserResource:
     
   if user is None:
     raise ApiError("User not found.", 404)
-  return UserResource(id=user.id, email=user.email)
+  return UserResource.from_model(user)
 
 def get_user_by_auth(auth: AuthSchema)->UserResource:
-  with SQLSession.begin() as db:
+  with SQLSession() as db:
     user = db.query(UserModel)\
       .where(
         (UserModel.email == auth.email)
@@ -31,7 +31,7 @@ def get_user_by_auth(auth: AuthSchema)->UserResource:
     raise exc
   if not bcrypt.checkpw(auth.password.encode(), user.password):
     raise exc
-  return UserResource(id=user.id, email=user.email)
+  return UserResource.from_model(user)
 
 def create_user(schema: AuthSchema)->UserResource:
   with SQLSession.begin() as db:
@@ -57,4 +57,4 @@ def create_user(schema: AuthSchema)->UserResource:
     
     db.expunge_all()
   
-  return UserResource(id=user.id, email=user.email)
+  return UserResource.from_model(user)

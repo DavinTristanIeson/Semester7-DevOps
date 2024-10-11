@@ -6,3 +6,4 @@ bcrypt
 rocketry
 python-multipart
 aiofiles
+python-dotenv

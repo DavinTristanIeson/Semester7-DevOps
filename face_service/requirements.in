@@ -1,0 +1,6 @@
+fastapi[standard]
+python-multipart
+rocketry
+aiofiles
+python-dotenv
+PyJWT

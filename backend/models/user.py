@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 import pydantic
-from models.sql import SQLBaseModel
+from models.sql import SQLBaseModel, UUID_column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Date, ForeignKey, Integer, String
 
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class UserModel(SQLBaseModel):
   __tablename__ = "users"
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+  business_id: Mapped[str] = UUID_column()
   email: Mapped[str] = mapped_column(String(255))
   # hashed
   password: Mapped[bytes] = mapped_column(String(255))
@@ -25,12 +26,12 @@ class RefreshTokenModel(SQLBaseModel):
 
 # Resource
 class UserResource(pydantic.BaseModel):
-  id: int
+  id: str
   email: str
   
   @staticmethod
   def from_model(model: UserModel)->"UserResource":
-    return UserResource(id=model.id, email=model.email)
+    return UserResource(id=model.business_id, email=model.email)
 
 class SessionTokenResource(pydantic.BaseModel):
   access_token: str

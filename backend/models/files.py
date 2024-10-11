@@ -1,17 +1,20 @@
 import datetime
 import pydantic
-from sqlalchemy import DateTime, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
 from models.sql import SQLBaseModel, UUID_column
 from sqlalchemy.orm import Mapped, mapped_column
 import os
+
+from models.user import UserModel
 
 # Model
 class FileModel(SQLBaseModel):
   __tablename__ = "files"
   id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
+  user_id: Mapped[int] = mapped_column(ForeignKey(UserModel.id), nullable=False)
   business_id: Mapped[str] = UUID_column()
-  path: Mapped[str] = mapped_column(String(255))
-  created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+  path: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+  created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc), nullable=False)
 
 # Resource
 class FileResource(pydantic.BaseModel):
