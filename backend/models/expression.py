@@ -25,7 +25,7 @@ class ExpressionRecognitionTaskModel(SQLBaseModel):
   user_id: Mapped[int] = mapped_column(Integer, ForeignKey(UserModel.id, ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
   status: Mapped[ExpressionRecognitionTaskStatus] = mapped_column(String(36), nullable=False, default=ExpressionRecognitionTaskStatus.NotStarted.value)
   accessed_at: Mapped[datetime.datetime] = mapped_column(Date, nullable=False, default=lambda: datetime.datetime.now(datetime.timezone.utc))
-  results: Mapped[list["ExpressionRecognitionTaskResultModel"]] = relationship("ExpressionRecognitionTaskResultModel", back_populates="results")
+  results: Mapped[list["ExpressionRecognitionTaskResultModel"]] = relationship("ExpressionRecognitionTaskResultModel", back_populates="task")
   error: Mapped[str] = mapped_column(String, nullable=True, default=None)
 
 class ExpressionRecognitionTaskResultModel(SQLBaseModel):

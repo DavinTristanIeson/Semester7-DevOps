@@ -67,7 +67,7 @@ export default function DashboardTable() {
           {data.map((item, index) => {
             return (
               <Table.Tr>
-                <Table.Td>{from + index}</Table.Td>
+                <Table.Td>{from + index + 1}</Table.Td>
                 <Table.Td>
                   <Image
                     src={item.url}

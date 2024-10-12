@@ -9,7 +9,7 @@ import re
 from common.constants import EnvironmentVariables
 from controllers.exceptions import ApiError
 from models.sql import SQLSession
-from models.user import RefreshTokenModel, SessionTokenResource
+from models.user import RefreshTokenModel, SessionTokenResource, UserModel
 
 class SessionTokenType(Enum):
   AccessToken = 'access_token'
@@ -37,16 +37,16 @@ class SessionTokenData(pydantic.BaseModel):
 
 
 
-def jwt_create(user_id: str)->SessionTokenResource:
+def jwt_create(user: UserModel)->SessionTokenResource:
   access_token_exp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=15)
   refresh_token_exp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=14)
 
-  access_token = SessionTokenData(user_id=user_id, exp=access_token_exp)
-  refresh_token = SessionTokenData(user_id=user_id, exp=refresh_token_exp)
+  access_token = SessionTokenData(user_id=user.business_id, exp=access_token_exp)
+  refresh_token = SessionTokenData(user_id=user.business_id, exp=refresh_token_exp)
 
   with SQLSession.begin() as db:
-    new_token = RefreshTokenModel(id=user_id, token=refresh_token.encode(SessionTokenType.RefreshToken), expiry=refresh_token.exp)
-    old_token = db.query(RefreshTokenModel).where(RefreshTokenModel.id == user_id).limit(1).first()
+    new_token = RefreshTokenModel(id=user.id, token=refresh_token.encode(SessionTokenType.RefreshToken), expiry=refresh_token.exp)
+    old_token = db.query(RefreshTokenModel).where(RefreshTokenModel.id == user.id).limit(1).first()
     if old_token is not None:
       old_token.expiry = new_token.expiry
       old_token.token = new_token.token
@@ -81,17 +81,19 @@ def jwt_authorize(request: Request)->SessionTokenData:
 
 def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
   with SQLSession() as db:
+    user = db.query(UserModel).where(UserModel.business_id == token.user_id).first()
+    if user is None:
+      raise ApiError(f"Cannot find any user with ID {token.user_id}. That user might have been deleted.", 404)
     token_in_db = db.query(RefreshTokenModel)\
       .where(
-        (RefreshTokenModel.id == token.user_id) &
+        (RefreshTokenModel.id == user.id) &
         (datetime.datetime.now(datetime.timezone.utc) < RefreshTokenModel.expiry)
       )\
       .first()
+    if token_in_db is None:
+      raise ApiError("Refresh token has expired", 401)    
     db.expunge_all()
-    
-  if token_in_db is None:
-    raise ApiError("Refresh token has expired", 401)    
-  return jwt_create(token.user_id)
+  return jwt_create(user)
 
 def jwt_revoke(token: SessionTokenData):
   with SQLSession.begin() as db:

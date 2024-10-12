@@ -30,6 +30,7 @@ def create_task(user_id: int):
     )
     db.add(task)
     db.flush()
+    task.results
     db.expunge_all()
 
   return ExpressionRecognitionTaskResource.from_model(task)

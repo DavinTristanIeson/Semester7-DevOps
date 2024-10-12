@@ -28,7 +28,10 @@ async function zipFiles(files: File[]): Promise<File> {
   return zipfile;
 }
 
-function useTaskFilesUpload(stagedFiles: File[]) {
+function useTaskFilesUpload(
+  stagedFiles: File[],
+  setStagedFiles: React.Dispatch<React.SetStateAction<File[]>>
+) {
   const { mutateAsync: createTask, isPending } = useCreateTask();
   const { setFiles, setTaskId } = useTaskContext();
   const onUpload = handleErrorFn(async () => {
@@ -44,13 +47,17 @@ function useTaskFilesUpload(stagedFiles: File[]) {
     }
     setTaskId(res.data.id);
     setFiles(stagedFiles);
+    setStagedFiles([]);
   });
   return { onUpload, isPending };
 }
 
 export function TaskFileUploadManager() {
   const [stagedFiles, setStagedFiles] = React.useState<File[]>([]);
-  const { onUpload, isPending } = useTaskFilesUpload(stagedFiles);
+  const { onUpload, isPending } = useTaskFilesUpload(
+    stagedFiles,
+    setStagedFiles
+  );
 
   const filePreviews = React.useMemo(() => {
     return stagedFiles.map((file, index) => {

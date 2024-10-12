@@ -1,13 +1,10 @@
-import datetime
-from enum import Enum
-import os
 from typing import Annotated
 from fastapi import Depends, Request
 import pydantic
 import re
 import jwt
 
-from common.constants import EnvironmentVariables, FilePaths
+from common.constants import EnvironmentVariables
 from controllers.exceptions import ApiError
 
 class ExpressionRecognitionApiTokenData(pydantic.BaseModel):

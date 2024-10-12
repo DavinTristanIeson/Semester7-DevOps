@@ -1,10 +1,7 @@
 import datetime
-from typing import TYPE_CHECKING
 import os
 import aiofiles
-
-if TYPE_CHECKING:
-  from fastapi import UploadFile
+from fastapi import UploadFile
 
 from common.constants import TIMESTAMP_SEPARATOR, FilePaths
 

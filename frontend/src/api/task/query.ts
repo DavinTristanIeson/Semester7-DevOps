@@ -21,10 +21,9 @@ export const useGetTask: ApiQueryFunction<IdInput, ApiResult<ExpressionRecogniti
     queryKey: TaskQueryKeys.task(input),
     queryFn() {
       return ApiFetch({
-        params: input,
         classType: ExpressionRecognitionTaskModel,
         method: 'get',
-        url: ENDPOINT,
+        url: `${ENDPOINT}/${input.id}`,
       })
     },
     staleTime: StaleTimes.Medium,

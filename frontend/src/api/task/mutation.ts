@@ -18,7 +18,6 @@ export const useCreateTask: ApiMutationFunction<CreateTaskInput, ApiResult<Expre
         classType: ExpressionRecognitionTaskModel,
         method: 'post',
         url: ENDPOINT,
-        body,
         formData
       });
     },

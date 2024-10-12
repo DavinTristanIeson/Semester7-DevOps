@@ -17,7 +17,7 @@ def get_user(id: str)->UserModel:
     raise ApiError("User not found.", 404)
   return user
 
-def get_user_by_auth(auth: AuthSchema)->UserResource:
+def get_user_by_auth(auth: AuthSchema)->UserModel:
   with SQLSession() as db:
     user = db.query(UserModel)\
       .where(
@@ -31,9 +31,9 @@ def get_user_by_auth(auth: AuthSchema)->UserResource:
     raise exc
   if not bcrypt.checkpw(auth.password.encode(), user.password):
     raise exc
-  return UserResource.from_model(user)
+  return user
 
-def create_user(schema: AuthSchema)->UserResource:
+def create_user(schema: AuthSchema)->UserModel:
   with SQLSession.begin() as db:
     check_user = db.query(UserModel)\
       .where(UserModel.username == schema.username)\
@@ -57,4 +57,4 @@ def create_user(schema: AuthSchema)->UserResource:
     
     db.expunge_all()
   
-  return UserResource.from_model(user)
+  return user

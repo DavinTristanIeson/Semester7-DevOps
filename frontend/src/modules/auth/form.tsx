@@ -27,16 +27,17 @@ export default function AuthenticationForm(props: AuthenticationFormProps) {
         <TextInput
           {...form.register("username")}
           error={capitalize(form.formState.errors.username?.message)}
-          label="Email"
-          placeholder="Enter email"
+          label="Username"
+          placeholder="Enter username"
+          radius="xl"
         />
         <PasswordInput
           {...form.register("password")}
           error={capitalize(form.formState.errors.password?.message)}
           label="Password"
-          placeholder="Enter
-           password"
+          placeholder="Enter password"
           style={{ marginBottom: "20px" }}
+          radius="xl"
         />
         <Box h={20} />
         <SubmitButton>Submit</SubmitButton>

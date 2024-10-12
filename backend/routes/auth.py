@@ -17,7 +17,7 @@ async def get__me(auth: controllers.auth.JWTAuthDependency):
 @router.post('/login')
 async def post__login(body: AuthSchema):
   user = controllers.user.get_user_by_auth(body)
-  return ApiResult(data=controllers.auth.jwt_create(user.id), message=None)
+  return ApiResult(data=controllers.auth.jwt_create(user), message=None)
 
 @router.post('/refresh')
 async def post__refresh(token: RefreshTokenSchema):
@@ -27,7 +27,7 @@ async def post__refresh(token: RefreshTokenSchema):
 @router.post('/register')
 async def post__register(body: AuthSchema):
   user = controllers.user.create_user(body)
-  content = controllers.auth.jwt_create(user.id)
+  content = controllers.auth.jwt_create(user)
 
   return JSONResponse(
     content=ApiResult(data=content, message="Registered account successfully.").model_dump(),
