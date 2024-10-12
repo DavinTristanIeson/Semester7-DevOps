@@ -15,6 +15,31 @@ export function usePaginationSetup() {
   return { page, setPage, size, setSize };
 }
 
+interface UsePaginateDataReturn<T> {
+  data: T[];
+  from: number;
+  to: number;
+  meta: PaginationMeta;
+  pagination: PaginationSetupProps;
+}
+
+export function usePaginateData<T>(data: T[]): UsePaginateDataReturn<T> {
+  const pagination = usePaginationSetup();
+  const from = (pagination.page - 1) * pagination.size;
+  return {
+    data: data.slice(from, from + pagination.size),
+    from,
+    to: from + pagination.size - 1,
+    meta: {
+      page: pagination.page,
+      pages: Math.ceil(data.length / pagination.size),
+      size: pagination.size,
+      total: data.length,
+    },
+    pagination,
+  };
+}
+
 interface PaginationProps extends PaginationSetupProps {
   meta: PaginationMeta;
 }

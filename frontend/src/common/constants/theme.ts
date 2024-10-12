@@ -2,7 +2,6 @@ import { createTheme } from "@mantine/core";
 import Colors from "./colors";
 
 const mantineTheme = createTheme({
-  defaultRadius: 'xl',
   primaryColor: 'parallel',
   colors: {
     parallel: [

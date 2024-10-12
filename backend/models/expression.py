@@ -35,61 +35,78 @@ class ExpressionRecognitionTaskResultModel(SQLBaseModel):
   task_id = mapped_column(Integer, ForeignKey(ExpressionRecognitionTaskModel.id, onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
   task: Mapped[ExpressionRecognitionTaskModel] = relationship("ExpressionRecognitionTaskModel", back_populates="results")
 
+  # dimensionally-reduced x and y
+  representative_x: Mapped[float] = mapped_column(Float, nullable=False)
+  representative_y: Mapped[float] = mapped_column(Float, nullable=False)
+
   x0: Mapped[int] = mapped_column(Integer, nullable=False)
   x1: Mapped[int] = mapped_column(Integer, nullable=False)
   y0: Mapped[int] = mapped_column(Integer, nullable=False)
   y1: Mapped[int] = mapped_column(Integer, nullable=False)
-  width: Mapped[int] = mapped_column(Integer, nullable=False)
-  height: Mapped[int] = mapped_column(Integer, nullable=False)
   
-  happiness: Mapped[float] = mapped_column(Float, nullable=False)
-  anger: Mapped[float] = mapped_column(Float, nullable=False)
-  surprise: Mapped[float] = mapped_column(Float, nullable=False)
-  disgust: Mapped[float] = mapped_column(Float, nullable=False)
-  sadness: Mapped[float] = mapped_column(Float, nullable=False)
+  happy: Mapped[float] = mapped_column(Float, nullable=False)
+  angry: Mapped[float] = mapped_column(Float, nullable=False)
+  surprised: Mapped[float] = mapped_column(Float, nullable=False)
+  disgusted: Mapped[float] = mapped_column(Float, nullable=False)
+  sad: Mapped[float] = mapped_column(Float, nullable=False)
   neutral: Mapped[float] = mapped_column(Float, nullable=False)
 
 
 # Resource    
-class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
-  filename: str
 
+class Point(pydantic.BaseModel):
+  x: float
+  y: float
+
+class BoundingBox(pydantic.BaseModel):
   x0: int
   x1: int 
-  y0: int 
+  y0: int
   y1: int
-  width: int
-  height: int
 
-  happiness: float
-  anger: float
-  surprise: float
-  disgust: float
-  sadness: float
+class FacialExpressionProbabilities(pydantic.BaseModel):
+  happy: float
+  angry: float
+  surprised: float
+  disgusted: float
+  sad: float
   neutral: float
+
+class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
+  filename: str
+  representative_point: Point
+  bbox: BoundingBox
+  probabilities: FacialExpressionProbabilities
+
   @staticmethod
   def from_model(model: ExpressionRecognitionTaskResultModel)->"ExpressionRecognitionTaskResultResource":
     return ExpressionRecognitionTaskResultResource(
       filename=model.filename,
-      anger=model.anger,
-      disgust=model.disgust,
-      happiness=model.happiness,
-      height=model.height,
-      neutral=model.neutral,
-      sadness=model.sadness,
-      surprise=model.surprise,
-      width=model.width,
-      x0=model.x0,
-      x1=model.x1,
-      y0=model.y0,
-      y1=model.y1
+      probabilities=FacialExpressionProbabilities(
+        angry=model.angry,
+        disgusted=model.disgusted,
+        happy=model.happy,
+        neutral=model.neutral,
+        sad=model.sad,
+        surprised=model.surprised,
+      ),
+      bbox=BoundingBox(
+        x0=model.x0,
+        x1=model.x1,
+        y0=model.y0,
+        y1=model.y1
+      ),
+      representative_point=Point(
+        x=model.representative_x,
+        y=model.representative_y,
+      )
     )
 
 class ExpressionRecognitionTaskResource(pydantic.BaseModel):
   model_config = pydantic.ConfigDict(use_enum_values=True)
   id: str
   status: ExpressionRecognitionTaskStatus
-  data: Optional[list[ExpressionRecognitionTaskResultResource]]
+  results: Optional[list[ExpressionRecognitionTaskResultResource]]
   error: Optional[str]
 
   @staticmethod
@@ -98,7 +115,7 @@ class ExpressionRecognitionTaskResource(pydantic.BaseModel):
       id=model.business_id,
       status=model.status,
       error=model.error,
-      data=(list(map(ExpressionRecognitionTaskResultResource.from_model, model.results))
+      results=(list(map(ExpressionRecognitionTaskResultResource.from_model, model.results))
         if model.results is not None else None),
     )
 

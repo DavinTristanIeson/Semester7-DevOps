@@ -1,40 +1,6 @@
-.gallery {
-  margin: 50px;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.album__cover {
-  padding: 0px 10px;
-  width: 90%;
-  height: 90%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.album__cover__image {
-  width: 110px;
-  height: 110px;
-  border-radius: 10px;
-  object-fit: cover;
-  object-position: center;
-}
-
-
-.album__card {
-  width: 300px;
-  height: 330px;
-  margin: 20px;
-  padding: 20px 0px;
-  border-radius: 10px;
-  background-color: beige;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.album__title {
-  font-family: monospace;
+.empty-view {
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 40%, rgba(255, 255, 255, 0.1));
+  min-height: 10rem;
+  padding: 2rem;
+  border-radius: var(--mantine-radius-xl);
 }

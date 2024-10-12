@@ -1,3 +1,15 @@
+export class BoundingBox {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+}
+
+export class Point {
+  x: number;
+  y: number;
+}
+
 export interface IdInput {
   id: string;
 }

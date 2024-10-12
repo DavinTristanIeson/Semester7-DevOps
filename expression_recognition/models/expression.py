@@ -9,27 +9,36 @@ class ExpressionRecognitionTaskStatus(str,Enum):
   Success = "success",
 
 # Resource    
-class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
-  filename: str
 
+class Point(pydantic.BaseModel):
+  x: float
+  y: float
+
+class BoundingBox(pydantic.BaseModel):
   x0: int
   x1: int 
-  y0: int 
+  y0: int
   y1: int
-  width: int
-  height: int
-
-  happiness: float
-  anger: float
-  surprise: float
-  disgust: float
-  sadness: float
+ 
+class FacialExpressionProbabilities(pydantic.BaseModel):
+  happy: float
+  angry: float
+  surprised: float
+  disgusted: float
+  sad: float
   neutral: float
 
+class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
+  filename: str
+  representative_point: Point
+  bbox: BoundingBox
+  probabilities: FacialExpressionProbabilities
+
 class ExpressionRecognitionTaskResource(pydantic.BaseModel):
+  model_config = pydantic.ConfigDict(use_enum_values=True)
   id: str
   status: ExpressionRecognitionTaskStatus
-  data: Optional[list[ExpressionRecognitionTaskResultResource]]
+  results: Optional[list[ExpressionRecognitionTaskResultResource]]
   error: Optional[str]
 
 # Schema

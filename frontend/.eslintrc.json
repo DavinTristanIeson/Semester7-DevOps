@@ -5,6 +5,7 @@
     "@typescript-eslint/no-namespace": "off",
     "no-unused-expressions": "warn",
     "no-unused-labels": "warn",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "react-hooks/exhaustive-deps": "warn"
   }
 }

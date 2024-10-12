@@ -1,6 +1,7 @@
 
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import JSONResponse
+from common.asynchronous import TaskTracker
 import controllers
 from controllers.auth import JWTAuthDependency
 import zipfile
@@ -23,7 +24,10 @@ def post__task(auth: JWTAuthDependency, file: UploadFile = File()):
     raise ApiError("Uploaded zip file is corrupted, invalid, or not an actual zip file.", 400)
 
   user = controllers.user.get_user(auth.user_id)
-  task = controllers.tasks.create_task(file, user.id)
+  task = controllers.tasks.create_task(user.id)
+  TaskTracker().enqueue(
+    controllers.expression_recognition_service.forward_task(task.id, file)
+  )
   return JSONResponse(
     content=ApiResult(message="Our algorithms will now analyze the faces in your images. This may take some time.\
       Please do not turn off your computer or close this site or the images that you have uploaded will disappear.", data = task).as_json(),
@@ -34,11 +38,12 @@ def post__task(auth: JWTAuthDependency, file: UploadFile = File()):
 def get__task(auth: JWTAuthDependency, id: str):
   user = controllers.user.get_user(auth.user_id)
   task = controllers.tasks.get_task(id, user.id)
-  return ApiResult(message=None, data = task)
+  return ApiResult(message=None, data=task)
 
+# Only accessible from Expression Recognition API
 @router.patch('/[id]')
 async def update__tasks(auth: ExpressionRecognitionApiAuthDependency, id: str, body: ExpressionRecognitionTaskUpdateSchema):
-  # Assume that the file is a valid zip file
+  controllers.tasks.update_task(id, body)
   return JSONResponse(
-    content=ApiResult(data=None, message="Successfully saved task").as_json()
+    content=ApiResult(data=None, message="Successfully updated task status").as_json()
   )

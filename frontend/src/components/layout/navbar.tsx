@@ -40,13 +40,18 @@ export default function DashboardNavigationBar(
             <ArrowLeft size={32} color={Colors.foregroundPrimary} />
           </ActionIcon>
         )}
-        <Title order={1} style={{ fontFamily: "monospace" }}>
+        <Title
+          order={1}
+          style={{ fontFamily: "monospace", fontStyle: "italic" }}
+        >
           {props.title ?? "PARALLEL"}
         </Title>
       </Flex>
       {props.actions ??
         props.links?.map((link) => (
           <PromiseButton
+            variant="subtle"
+            color={Colors.foregroundPrimary}
             onClick={
               link.onClick
                 ? handleErrorFn(link.onClick)

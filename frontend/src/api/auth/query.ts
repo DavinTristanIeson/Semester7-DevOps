@@ -2,19 +2,12 @@ import { ApiQueryFunction } from "@/common/api/fetch-types";
 import { UserModel } from "./model";
 import { ApiResult } from "@/common/api/model";
 import { useQuery } from "@tanstack/react-query";
-import { AUTH_KEY, KY_BASE_CONFIG } from "@/common/api/constants";
+import { AUTH_KEY } from "@/common/api/constants";
 import { ApiFetch } from "@/common/api/fetch";
-import ky from "ky";
-import { KyClientHooks } from "@/common/api/ky-hooks";
 import { StaleTimes } from "../common/query";
+import { meClient } from "@/common/api/ky-client";
 
 // Handles auth state
-const meClient = ky.create({
-  ...KY_BASE_CONFIG,
-  hooks: {
-    beforeRequest: [KyClientHooks.setupAuthorization]
-  }
-});
 export const useGetMe: ApiQueryFunction<never, ApiResult<UserModel>> = function (options) {
   return useQuery({
     staleTime: StaleTimes.Medium,

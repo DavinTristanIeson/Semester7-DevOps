@@ -4,7 +4,7 @@ from typing import Union
 import zipfile
 import os
 import apscheduler
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 import apscheduler.triggers
 import apscheduler.triggers.interval
 
@@ -18,7 +18,7 @@ def get_first_file_in_queue()->Union[os.DirEntry[str], None]:
   except StopIteration:
     return None
 
-scheduler = AsyncIOScheduler()
+scheduler = BlockingScheduler()
 logger = logging.getLogger("Expression Recognition")
 
 async def execute_expression_recognition():
@@ -31,9 +31,7 @@ async def execute_expression_recognition():
   logger.info(f"Starting expression recognition task for file: {fpath.path} with ID {id}")
 
   # Send report to server
-  TaskTracker().enqueue(
-    expression.server.report_operation_pending(id)
-  )
+  await expression.server.report_operation_pending(id)
 
   try:
     logger.info(f"Unzipping files from {fpath.path}...")

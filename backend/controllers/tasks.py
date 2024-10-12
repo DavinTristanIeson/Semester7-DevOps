@@ -23,7 +23,7 @@ def get_task(id: str, user_id: int)->ExpressionRecognitionTaskResource:
     db.expunge_all()
   return ExpressionRecognitionTaskResource.from_model(task)
 
-def create_task(file: UploadFile, user_id: int):
+def create_task(user_id: int):
   with SQLSession.begin() as db:
     task = ExpressionRecognitionTaskModel(
       user_id=user_id
@@ -32,9 +32,6 @@ def create_task(file: UploadFile, user_id: int):
     db.flush()
     db.expunge_all()
 
-  TaskTracker().enqueue(
-    controllers.expression_recognition_service.forward_task(task.business_id, file)
-  )
   return ExpressionRecognitionTaskResource.from_model(task)
 
 def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):

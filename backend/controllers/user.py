@@ -26,7 +26,7 @@ def get_user_by_auth(auth: AuthSchema)->UserResource:
       .first()
     db.expunge_all()
     
-  exc = ApiError("Email or password is wrong", 403)
+  exc = ApiError("Username or password is wrong", 403)
   if user is None:
     raise exc
   if not bcrypt.checkpw(auth.password.encode(), user.password):
@@ -40,10 +40,10 @@ def create_user(schema: AuthSchema)->UserResource:
       .first()
     
     if check_user is not None:
-      raise ApiError("Email is already in use", 400)
+      raise ApiError("Username is already in use", 400)
     
     new_user = UserModel(
-      email=schema.username,
+      username=schema.username,
       password=bcrypt.hashpw(schema.password.encode(), bcrypt.gensalt())
     )
     db.add(new_user)
