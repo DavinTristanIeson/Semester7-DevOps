@@ -1,14 +1,13 @@
-import asyncio
 import datetime
-from typing import Sequence
-import zipfile
-from fastapi import UploadFile
+from typing import TYPE_CHECKING
 import os
 import aiofiles
 
-from common.constants import FilePaths
+if TYPE_CHECKING:
+  from fastapi import UploadFile
 
-TIMESTAMP_SEPARATOR = "__"
+from common.constants import TIMESTAMP_SEPARATOR, FilePaths
+
 async def enqueue_task_file(task_id: str, zipped_file: UploadFile):
   now = datetime.datetime.now(datetime.timezone.utc)
   filename = f"{now.timestamp()}{TIMESTAMP_SEPARATOR}{task_id}.zip"
@@ -19,3 +18,7 @@ async def enqueue_task_file(task_id: str, zipped_file: UploadFile):
   async with aiofiles.open(fpath, 'rb') as out_file:
     while chunk:=zipped_file.file.read(4096):
       await out_file.write(chunk)
+
+__all__ = [
+  "enqueue_task_file"
+]

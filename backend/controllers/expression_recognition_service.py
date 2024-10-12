@@ -10,15 +10,6 @@ from controllers.exceptions import ApiError
 from models.api import ApiResult
 import logging
 
-
-URL = EnvironmentVariables.get(EnvironmentVariables.ExpressionRecognitionApiUrl)
-service_communicator = httpx.AsyncClient(
-  headers={
-    "Authorization": f"Bearer {ExpressionRecognitionApiTokenData.token()}",
-    "Content-Type": "application/json"
-  }
-)
-
 class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
   issuer: str
   
@@ -51,6 +42,14 @@ def jwt_authorize(request: Request)->ExpressionRecognitionApiTokenData:
     raise ApiError("Unauthenticated.", 401)
 
   return token
+
+URL = EnvironmentVariables.get(EnvironmentVariables.ExpressionRecognitionApiUrl)
+service_communicator = httpx.AsyncClient(
+  headers={
+    "Authorization": f"Bearer {ExpressionRecognitionApiTokenData.token()}",
+    "Content-Type": "application/json"
+  }
+)
 ExpressionRecognitionApiAuthDependency = Annotated[ExpressionRecognitionApiTokenData, Depends(jwt_authorize)]
 
 
@@ -71,7 +70,9 @@ async def forward_task(id: str, file: UploadFile):
   if res.status_code == 201:
     logger.info(f"Operation [Forward Task]: Successful")
     return data
-  raise ApiError(data.message or "An unexpected error has occurred", res.status_code)
+  else:
+    logger.error(f"Operation [Forward Task]: Failed with message {data.message}")
+    raise ApiError(data.message or "An unexpected error has occurred", res.status_code)
 
 __all__ = [
   "forward_task",

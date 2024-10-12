@@ -1,2 +1,2 @@
 import routes.auth as auth
-import routes.album as album
+import routes.tasks as tasks

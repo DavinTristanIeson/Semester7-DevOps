@@ -1,8 +1,6 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import asyncio
 
 from common.metaclass import Singleton
-
 
 class TaskTracker(metaclass=Singleton):
   tasks: set[asyncio.Task]
@@ -13,9 +11,7 @@ class TaskTracker(metaclass=Singleton):
 
     return task
 
-scheduler = AsyncIOScheduler()
 
 __all__ = [
-  "scheduler",
-  "TaskTracker"
+  "TaskTracker",
 ]

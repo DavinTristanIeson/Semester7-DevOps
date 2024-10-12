@@ -10,6 +10,10 @@ class EnvironmentVariables(str, Enum):
   def get(env: "EnvironmentVariables")->str:
     return cast(str, os.getenv(env.value))
   
+DATA_PATH = 'data'
+TIMESTAMP_SEPARATOR = "__"
+
 class FilePaths:
-  TemporaryWorkingDirectory = 'tempwd',
-  Queue = "queue"
+  Data = DATA_PATH
+  TemporaryWorkingDirectory = os.path.join(DATA_PATH, 'tempwd')
+  Queue = os.path.join(DATA_PATH, "queue")

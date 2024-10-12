@@ -4,6 +4,6 @@ pydantic
 PyJWT
 httpx
 bcrypt
-rocketry
+apscheduler
 python-multipart
 python-dotenv

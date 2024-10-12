@@ -22,7 +22,8 @@ def post__task(auth: JWTAuthDependency, file: UploadFile = File()):
   except Exception as e:
     raise ApiError("Uploaded zip file is corrupted, invalid, or not an actual zip file.", 400)
 
-  task = controllers.tasks.create_task(file, auth.user_id)
+  user = controllers.user.get_user(auth.user_id)
+  task = controllers.tasks.create_task(file, user.id)
   return JSONResponse(
     content=ApiResult(message="Our algorithms will now analyze the faces in your images. This may take some time.\
       Please do not turn off your computer or close this site or the images that you have uploaded will disappear.", data = task).as_json(),
@@ -31,7 +32,8 @@ def post__task(auth: JWTAuthDependency, file: UploadFile = File()):
 
 @router.post('/[id]')
 def get__task(auth: JWTAuthDependency, id: str):
-  task = controllers.tasks.get_task(id, auth.user_id)
+  user = controllers.user.get_user(auth.user_id)
+  task = controllers.tasks.get_task(id, user.id)
   return ApiResult(message=None, data = task)
 
 @router.patch('/[id]')

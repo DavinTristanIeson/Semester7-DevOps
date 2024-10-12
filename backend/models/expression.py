@@ -1,6 +1,7 @@
 import datetime
+from enum import Enum
 import pydantic
-from sqlalchemy import Date, Enum, Float, ForeignKey, Integer, String
+from sqlalchemy import Date, Float, ForeignKey, Integer, String
 
 from models.sql import SQLBaseModel, UUID_column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -10,7 +11,7 @@ from typing import Any, Optional, Sequence
 from models.user import UserModel
 
 
-class ExpressionRecognitionTaskStatus(str,Enum):
+class ExpressionRecognitionTaskStatus(str, Enum):
   NotStarted = "not_started",
   Pending = "pending",
   Failed = "failed",
@@ -22,7 +23,7 @@ class ExpressionRecognitionTaskModel(SQLBaseModel):
   # For access
   business_id: Mapped[str] = UUID_column()
   user_id: Mapped[int] = mapped_column(Integer, ForeignKey(UserModel.id, ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
-  status: Mapped[ExpressionRecognitionTaskStatus] = mapped_column(String(36), nullable=False, default=ExpressionRecognitionTaskStatus.NotStarted)
+  status: Mapped[ExpressionRecognitionTaskStatus] = mapped_column(String(36), nullable=False, default=ExpressionRecognitionTaskStatus.NotStarted.value)
   accessed_at: Mapped[datetime.datetime] = mapped_column(Date, nullable=False, default=lambda: datetime.datetime.now(datetime.timezone.utc))
   results: Mapped[list["ExpressionRecognitionTaskResultModel"]] = relationship("ExpressionRecognitionTaskResultModel", back_populates="results")
   error: Mapped[str] = mapped_column(String, nullable=True, default=None)
@@ -85,6 +86,7 @@ class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
     )
 
 class ExpressionRecognitionTaskResource(pydantic.BaseModel):
+  model_config = pydantic.ConfigDict(use_enum_values=True)
   id: str
   status: ExpressionRecognitionTaskStatus
   data: Optional[list[ExpressionRecognitionTaskResultResource]]

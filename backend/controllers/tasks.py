@@ -1,7 +1,9 @@
 
 import datetime
+import apscheduler
+import apscheduler.triggers
+import apscheduler.triggers.interval
 from fastapi import UploadFile
-import rocketry.conds
 from common.asynchronous import TaskTracker, scheduler
 import controllers
 from controllers.exceptions import ApiError
@@ -51,7 +53,6 @@ def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
     if payload.error is not None:
       task.error = payload.error
 
-@scheduler.task(rocketry.conds.daily)
 async def check_acknowledged_task():
   with SQLSession() as db:
     tasks = db.query(ExpressionRecognitionTaskModel).where(
@@ -61,3 +62,4 @@ async def check_acknowledged_task():
     for task in tasks:
       db.delete(task)
   
+scheduler.add_job(check_acknowledged_task, apscheduler.triggers.interval.IntervalTrigger(days=1))

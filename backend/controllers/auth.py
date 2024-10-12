@@ -22,7 +22,7 @@ class SessionTokenType(Enum):
       else EnvironmentVariables.RefreshTokenSecret)
 
 class SessionTokenData(pydantic.BaseModel):
-  user_id: int
+  user_id: str
   exp: datetime.datetime
 
   @staticmethod
@@ -37,7 +37,7 @@ class SessionTokenData(pydantic.BaseModel):
 
 
 
-def jwt_create(user_id: int)->SessionTokenResource:
+def jwt_create(user_id: str)->SessionTokenResource:
   access_token_exp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=15)
   refresh_token_exp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=14)
 

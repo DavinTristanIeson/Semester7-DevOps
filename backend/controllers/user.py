@@ -5,23 +5,23 @@ from models.user import AuthSchema, UserModel, UserResource
 
 import bcrypt
 
-def get_user(id: int)->UserResource:
+def get_user(id: str)->UserModel:
   with SQLSession() as db:
     user = db.query(UserModel)\
-      .where(UserModel.id == id)\
+      .where(UserModel.business_id == id)\
       .first()
     
     db.expunge_all()
     
   if user is None:
     raise ApiError("User not found.", 404)
-  return UserResource.from_model(user)
+  return user
 
 def get_user_by_auth(auth: AuthSchema)->UserResource:
   with SQLSession() as db:
     user = db.query(UserModel)\
       .where(
-        (UserModel.email == auth.email)
+        (UserModel.username == auth.username)
       )\
       .first()
     db.expunge_all()
@@ -36,20 +36,20 @@ def get_user_by_auth(auth: AuthSchema)->UserResource:
 def create_user(schema: AuthSchema)->UserResource:
   with SQLSession.begin() as db:
     check_user = db.query(UserModel)\
-      .where(UserModel.email == schema.email)\
+      .where(UserModel.username == schema.username)\
       .first()
     
     if check_user is not None:
       raise ApiError("Email is already in use", 400)
     
     new_user = UserModel(
-      email=schema.email,
+      email=schema.username,
       password=bcrypt.hashpw(schema.password.encode(), bcrypt.gensalt())
     )
     db.add(new_user)
     db.flush()
     user = db.query(UserModel)\
-      .where(UserModel.email == schema.email)\
+      .where(UserModel.username == schema.username)\
       .first()
         
     if user is None:

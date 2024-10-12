@@ -8,7 +8,7 @@ class UserModel(SQLBaseModel):
   __tablename__ = "users"
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
   business_id: Mapped[str] = UUID_column()
-  email: Mapped[str] = mapped_column(String(255))
+  username: Mapped[str] = mapped_column(String(255))
   # hashed
   password: Mapped[bytes] = mapped_column(String(255))
 
@@ -22,11 +22,11 @@ class RefreshTokenModel(SQLBaseModel):
 # Resource
 class UserResource(pydantic.BaseModel):
   id: str
-  email: str
+  username: str
   
   @staticmethod
   def from_model(model: UserModel)->"UserResource":
-    return UserResource(id=model.business_id, email=model.email)
+    return UserResource(id=model.business_id, username=model.username)
 
 class SessionTokenResource(pydantic.BaseModel):
   access_token: str
@@ -38,6 +38,6 @@ class RefreshTokenSchema(pydantic.BaseModel):
   refresh_token: str
 
 class AuthSchema(pydantic.BaseModel):
-  email: pydantic.EmailStr
-  password: str = pydantic.Field(min_length=8)
+  username: str = pydantic.Field(min_length=5, max_length=32, pattern=r"[a-zA-Z0-9]+")
+  password: str = pydantic.Field(min_length=8, max_length=32)
   

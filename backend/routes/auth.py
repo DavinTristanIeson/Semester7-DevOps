@@ -9,7 +9,10 @@ router = APIRouter()
 
 @router.get('/me')
 async def get__me(auth: controllers.auth.JWTAuthDependency):
-  return ApiResult(data=controllers.user.get_user(auth.user_id), message=None)
+  return ApiResult(
+    data=UserResource.from_model(controllers.user.get_user(auth.user_id)),
+    message=None
+  )
 
 @router.post('/login')
 async def post__login(body: AuthSchema):
