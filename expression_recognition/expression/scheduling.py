@@ -4,7 +4,7 @@ from typing import Union
 import zipfile
 import os
 import apscheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import apscheduler.triggers
 import apscheduler.triggers.interval
 
@@ -18,7 +18,7 @@ def get_first_file_in_queue()->Union[os.DirEntry[str], None]:
   except StopIteration:
     return None
 
-scheduler = BlockingScheduler()
+scheduler = AsyncIOScheduler()
 logger = logging.getLogger("Expression Recognition")
 
 async def execute_expression_recognition():
