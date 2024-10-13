@@ -50,6 +50,7 @@ export default function DashboardNavigationBar(
       {props.actions ??
         props.links?.map((link) => (
           <PromiseButton
+            key={link.label}
             variant="subtle"
             color={Colors.foregroundPrimary}
             onClick={

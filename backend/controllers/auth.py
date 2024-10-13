@@ -95,11 +95,15 @@ def jwt_refresh(token: SessionTokenData)->SessionTokenResource:
     db.expunge_all()
   return jwt_create(user)
 
-def jwt_revoke(token: SessionTokenData):
+def jwt_revoke(user_id: str):
   with SQLSession.begin() as db:
+    user = db.query(UserModel).where(UserModel.business_id == user_id).first()
+    if user is None:
+      return
+    
     token_in_db = db.query(RefreshTokenModel)\
       .where(
-        RefreshTokenModel.id == token.user_id
+        RefreshTokenModel.id == user.id
       )\
       .first()
     if token_in_db is None:

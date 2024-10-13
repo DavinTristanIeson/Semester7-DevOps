@@ -8,7 +8,7 @@ import { showNotification } from "@mantine/notifications";
 import { SessionToken } from "@/common/auth/token";
 import { useLogout } from "@/api/auth";
 import React from "react";
-import { WarningCircle } from "@phosphor-icons/react";
+import { DoorOpen, SignOut, WarningCircle } from "@phosphor-icons/react";
 import { TaskContextProvider } from "@/modules/dashboard/components/context";
 import ConfirmationDialog from "@/components/widgets/confirmation";
 import { handleErrorFn } from "@/common/utils/form";
@@ -30,8 +30,10 @@ export default function DashboardPage() {
   return (
     <AppLayout Header={<DashboardNavigationBar links={[logoutAction]} />}>
       <ConfirmationDialog
+        ref={logoutConfirm}
         title="Logout"
         message="Are you sure you want to logout?"
+        icon={<SignOut />}
         onConfirm={handleErrorFn(async () => {
           const res = await logout();
           if (res.message) {
@@ -49,6 +51,7 @@ export default function DashboardPage() {
         <div className="p-4">
           <TaskFileUploadManager />
           <ExpressionRecognitionTaskStatusComponent />
+          <div className="py-4"></div>
           <DashboardTable />
         </div>
       </TaskContextProvider>

@@ -3,7 +3,8 @@ from enum import Enum
 from typing import cast
 
 class EnvironmentVariables(str, Enum):
-  FaceServiceApiSecret = "FACE_SERVICE_API_SECRET"
+  ExpressionRecognitionApiSecret = "EXPRESSION_RECOGNITION_API_SECRET"
+  ExpressionRecognitionApiUrl = "EXPRESSION_RECOGNITION_API_URL"
   ApiServerUrl = "API_SERVER_URL"
 
   @staticmethod

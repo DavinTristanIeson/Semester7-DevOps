@@ -1,6 +1,7 @@
 import dotenv
-dotenv.load_dotenv()
+dotenv.load_dotenv(override=True)
 
+from common.constants import EnvironmentVariables
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles

@@ -12,13 +12,13 @@ class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
   
   @staticmethod
   def token()->str:
-    secret = EnvironmentVariables.get(EnvironmentVariables.FaceServiceApiSecret)
+    secret = EnvironmentVariables.get(EnvironmentVariables.ExpressionRecognitionApiSecret)
     content = jwt.encode(ExpressionRecognitionApiTokenData(issuer="Expression Recognition Service").model_dump(), secret, algorithm="HS256")
     return content
   
   @staticmethod
   def verify(token: str)->"ExpressionRecognitionApiTokenData":
-    secret = EnvironmentVariables.get(EnvironmentVariables.FaceServiceApiSecret)
+    secret = EnvironmentVariables.get(EnvironmentVariables.ExpressionRecognitionApiSecret)
     content = jwt.decode(token, secret, algorithms=["HS256"])
     return ExpressionRecognitionApiTokenData.model_validate(content)
 

@@ -1,5 +1,5 @@
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { Camera, Upload, X } from "@phosphor-icons/react";
+import { Camera, Upload, WarningCircle, X } from "@phosphor-icons/react";
 import Text from "@/components/standard/text";
 import { Flex, Group, SimpleGrid } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
@@ -110,6 +110,16 @@ export function TaskFileUploadManager() {
             </Text>
           </div>
         </Group>
+        {filePreviews.length > 0 && (
+          <Flex gap={8} pb={4} align="center" justify="center">
+            <WarningCircle size={24} />
+            <Text wrap>
+              To preserve the privacy of your photos, we will only store your
+              images temporarily. Any images (as well as the results from our
+              analysis) will be removed after you close your browser.
+            </Text>
+          </Flex>
+        )}
         <Flex align="center" direction="row" wrap="wrap">
           {filePreviews}
         </Flex>

@@ -13,7 +13,7 @@ export namespace SessionToken {
     if (typeof window === 'undefined') return undefined;
     const response = localStorage.getItem(LocalStorageKeys.Auth);
     if (response === null) return undefined;
-    const token = plainToInstance(SessionTokenModel, JSON.parse(response));
+    const token: SessionTokenModel = JSON.parse(response);
     return token;
   }
 

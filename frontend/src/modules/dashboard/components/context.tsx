@@ -18,18 +18,7 @@ interface TaskContextType {
 const TaskContext = React.createContext<TaskContextType>(undefined as any);
 
 export function TaskContextProvider(props: React.PropsWithChildren) {
-  const [taskId, setTaskId, clearTaskId] = useSessionStorage<
-    string | undefined
-  >({
-    key: "parallel:ongoing_task",
-    serialize(value) {
-      return value ?? "";
-    },
-    deserialize(value) {
-      return value || undefined;
-    },
-    defaultValue: undefined,
-  });
+  const [taskId, setTaskId] = React.useState<string | undefined>(undefined);
   const [files, setFiles] = React.useState<TaskFile[]>([]);
   return (
     <TaskContext.Provider

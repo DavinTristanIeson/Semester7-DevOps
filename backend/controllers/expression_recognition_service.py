@@ -1,13 +1,17 @@
+import io
+import os
 import re
-from typing import Annotated
+from typing import IO, Annotated, BinaryIO
+import zipfile
 from fastapi import Depends, Request, UploadFile
 import jwt
 import pydantic
 import httpx
 
 from common.constants import EnvironmentVariables
+import controllers
 from controllers.exceptions import ApiError
-from models.api import ApiResult
+from models.api import ApiErrorResult, ApiResult
 import logging
 
 class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
@@ -56,23 +60,24 @@ ExpressionRecognitionApiAuthDependency = Annotated[ExpressionRecognitionApiToken
 
 logger = logging.getLogger("Expression Recognition Service Communicator")
 
-async def forward_task(id: str, file: UploadFile):
+async def forward_task(id: str, file: bytes):
   logger.info(f"Operation [Forward Task]: Forwarding task {id} to Expression Recognition API")
+
   try:
-    res = await service_communicator.post(f"{URL}/tasks/{id}", files={
-      "file": file.file
+    res = await service_communicator.post(f"{URL}/tasks/{id}", content=file, headers={
+      "Content-Type": "application/zip"
     })
   except httpx.HTTPError as e:
     logger.error(f"Operation [Forward Task]: Error => {e}")
     raise ApiError("We are unable to communicate with our Expression Recognition Service at the moment. Please try again later.", 500)
   
-  data = ApiResult.model_validate(res.json())
   if res.status_code == 201:
     logger.info(f"Operation [Forward Task]: Successful")
-    return data
   else:
+    json = res.json()
+    data = ApiErrorResult.model_validate(json)
     logger.error(f"Operation [Forward Task]: Failed with message {data.message}")
-    raise ApiError(data.message or "An unexpected error has occurred", res.status_code)
+    raise ApiError("An unexpected error has occurred while uploading your file to the Expression Recognition Service. Please try again later.", res.status_code)
 
 __all__ = [
   "forward_task",

@@ -1,8 +1,8 @@
 import dotenv
+dotenv.load_dotenv(override=True)
+
 import routes
-
-dotenv.load_dotenv()
-
+from common.constants import EnvironmentVariables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,5 +12,11 @@ import routes
 app = FastAPI()
 controllers.exceptions.register_error_handlers(app)
 
-app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], allow_headers=['*'])
-app.include_router(routes.tasks.router)
+server_origin = EnvironmentVariables.get(EnvironmentVariables.ApiServerUrl)
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=[server_origin],
+  allow_methods=['*'],
+  allow_headers=['*']
+)
+app.include_router(routes.tasks.router, prefix="/tasks")

@@ -14,7 +14,7 @@ class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
   
   @staticmethod
   def token()->str:
-    secret = EnvironmentVariables.get(EnvironmentVariables.FaceServiceApiSecret)
+    secret = EnvironmentVariables.get(EnvironmentVariables.ExpressionRecognitionApiSecret)
     content = jwt.encode(ExpressionRecognitionApiTokenData(issuer="Expression Recognition Service").model_dump(), secret, algorithm="HS256")
     return content
 
@@ -32,7 +32,7 @@ async def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
   logger.error(f"Operation [Update Task]: Sending a task update request to API server with payload {payload.model_dump_json()}")
   try:
     res = await api_communicator.patch(
-      f"{URL}/tasks/{id}",
+      f"{URL}/api/tasks/{id}",
       data=payload.model_dump()
     )
   except httpx.HTTPError as e:
@@ -48,21 +48,21 @@ async def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
 
 
 async def report_operation_pending(id: str):
-  return update_task(id, ExpressionRecognitionTaskUpdateSchema(
+  await update_task(id, ExpressionRecognitionTaskUpdateSchema(
     status=ExpressionRecognitionTaskStatus.Pending,
     error=None,
     results=None,
   ))
 
 async def report_operation_failed(id: str, error: str):
-  return update_task(id, ExpressionRecognitionTaskUpdateSchema(
+  await update_task(id, ExpressionRecognitionTaskUpdateSchema(
     status=ExpressionRecognitionTaskStatus.Failed,
     error=error,
     results=None,
   ))
 
 async def report_operation_successful(id: str, results: Sequence[ExpressionRecognitionTaskResultResource]):
-  return update_task(id, ExpressionRecognitionTaskUpdateSchema(
+  await update_task(id, ExpressionRecognitionTaskUpdateSchema(
     status=ExpressionRecognitionTaskStatus.Success,
     error=None,
     results=results,
