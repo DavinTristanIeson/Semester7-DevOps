@@ -26,13 +26,13 @@ export class FacialExpressionProbabilities {
   sad: number
   neutral: number
 
-  classify(): FacialExpression {
-    const values = [this.happy, this.angry, this.surprised, this.disgusted, this.sad, this.neutral];
+  static classify(probabilities: FacialExpressionProbabilities): FacialExpression {
+    const values = [probabilities.happy, probabilities.angry, probabilities.surprised, probabilities.disgusted, probabilities.sad, probabilities.neutral];
     const labels = [FacialExpression.Happy, FacialExpression.Angry, FacialExpression.Surprised, FacialExpression.Disgusted, FacialExpression.Sad, FacialExpression.Neutral]
     let maxIdx = 0;
     let maxValue = 0
     for (let i = 0; i < values.length; i++){
-      if (maxValue > values[i]){
+      if (maxValue < values[i]){
         maxValue = values[i];
         maxIdx = i;
       }

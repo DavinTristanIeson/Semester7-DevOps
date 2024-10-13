@@ -1,5 +1,11 @@
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { Camera, Upload, WarningCircle, X } from "@phosphor-icons/react";
+import {
+  Camera,
+  ClockClockwise,
+  Upload,
+  WarningCircle,
+  X,
+} from "@phosphor-icons/react";
 import Text from "@/components/standard/text";
 import { Flex, Group, SimpleGrid } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
@@ -33,7 +39,7 @@ function useTaskFilesUpload(
   setStagedFiles: React.Dispatch<React.SetStateAction<File[]>>
 ) {
   const { mutateAsync: createTask, isPending } = useCreateTask();
-  const { setFiles, setTaskId } = useTaskContext();
+  const { setStagedFiles: setFiles, setTaskId, files } = useTaskContext();
   const onUpload = handleErrorFn(async () => {
     const zipfile = await zipFiles(stagedFiles);
     const res = await createTask({
@@ -49,12 +55,26 @@ function useTaskFilesUpload(
     setFiles(stagedFiles);
     setStagedFiles([]);
   });
-  return { onUpload, isPending };
+  const onReupload = handleErrorFn(async () => {
+    const zipfile = await zipFiles(files.map((file) => file.file));
+    const res = await createTask({
+      file: zipfile,
+    });
+    if (res.message) {
+      showNotification({
+        message: res.message,
+        color: Colors.sentimentInfo,
+      });
+    }
+    setTaskId(res.data.id);
+    setStagedFiles([]);
+  });
+  return { onUpload, isPending, onReupload, canReupload: files.length > 0 };
 }
 
 export function TaskFileUploadManager() {
   const [stagedFiles, setStagedFiles] = React.useState<File[]>([]);
-  const { onUpload, isPending } = useTaskFilesUpload(
+  const { onUpload, canReupload, onReupload, isPending } = useTaskFilesUpload(
     stagedFiles,
     setStagedFiles
   );
@@ -125,9 +145,19 @@ export function TaskFileUploadManager() {
         </Flex>
       </Dropzone>
 
-      <Flex direction="row-reverse" w="100%">
+      <Flex direction="row-reverse" w="100%" mt={16} gap={16}>
+        {canReupload && (
+          <Button
+            variant="outline"
+            loading={isPending}
+            leftSection={<ClockClockwise />}
+            color={Colors.backgroundPrimary}
+            onClick={onReupload}
+          >
+            Re-Upload Previous Files
+          </Button>
+        )}
         <Button
-          mt={16}
           onClick={onUpload}
           loading={isPending}
           disabled={stagedFiles.length === 0}

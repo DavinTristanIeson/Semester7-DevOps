@@ -19,7 +19,7 @@ class ExpressionRecognitionTaskStatus(str, Enum):
 
 class ExpressionRecognitionTaskModel(SQLBaseModel):
   __tablename__ = "expression_recognition_tasks"
-  id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False)
+  id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, nullable=False)
   # For access
   business_id: Mapped[str] = UUID_column()
   user_id: Mapped[int] = mapped_column(Integer, ForeignKey(UserModel.id, ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
@@ -30,8 +30,8 @@ class ExpressionRecognitionTaskModel(SQLBaseModel):
 
 class ExpressionRecognitionTaskResultModel(SQLBaseModel):
   __tablename__ = "expression_recognition_task_results"
-  id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False)
-  filename: Mapped[str] = mapped_column(String(255), primary_key=True, nullable=False)
+  id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, nullable=False)
+  filename: Mapped[str] = mapped_column(String(255), nullable=False)
   task_id = mapped_column(Integer, ForeignKey(ExpressionRecognitionTaskModel.id, onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
   task: Mapped[ExpressionRecognitionTaskModel] = relationship("ExpressionRecognitionTaskModel", back_populates="results")
 

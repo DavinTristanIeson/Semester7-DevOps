@@ -1,8 +1,8 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
-scheduler = AsyncIOScheduler(
+scheduler = BlockingScheduler(
   executors=dict(
     processpool=ProcessPoolExecutor(4),
-    default=ThreadPoolExecutor(20),
+    default=ThreadPoolExecutor(1),
   ),
 )

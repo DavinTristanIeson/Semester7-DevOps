@@ -2,20 +2,15 @@ import { ExpressionRecognitionTaskStatus, useGetTask } from "@/api/task";
 import { useTaskContext } from "./components/context";
 import { Alert, Flex, Loader } from "@mantine/core";
 import Colors from "@/common/constants/colors";
-import {
-  ArrowClockwise,
-  CheckCircle,
-  Warning,
-  XCircle,
-} from "@phosphor-icons/react";
+import { ArrowClockwise, CheckCircle, XCircle } from "@phosphor-icons/react";
 import Text from "@/components/standard/text";
 import React from "react";
 import Button from "@/components/standard/button/base";
 import { usePolling } from "@/hooks/polling";
-import { showNotification } from "@mantine/notifications";
+import { categorize, createSearchMap } from "@/common/utils/iterable";
 
 export default function ExpressionRecognitionTaskStatusComponent() {
-  const { taskId } = useTaskContext();
+  const { taskId, setFiles } = useTaskContext();
   const { data, refetch, isRefetching } = useGetTask(
     {
       id: taskId as string,
@@ -28,16 +23,40 @@ export default function ExpressionRecognitionTaskStatusComponent() {
   const status = React.useRef(ExpressionRecognitionTaskStatus.NotStarted);
   status.current = data?.data.status ?? ExpressionRecognitionTaskStatus.Success;
 
+  React.useEffect(() => {
+    if (
+      data?.data.results == null ||
+      data?.data.status !== ExpressionRecognitionTaskStatus.Success
+    ) {
+      return;
+    }
+
+    const resultMap = categorize(
+      data.data.results,
+      (result) => result.filename
+    );
+    setFiles((files) => {
+      return files.map((file) => {
+        return {
+          ...file,
+          results: resultMap[file.file.name],
+        };
+      });
+    });
+  }, [data?.data]);
+
   usePolling({
     fn() {
       refetch();
-      showNotification({
-        message: "Refetching status...",
-      });
     },
-    interval: 1000,
+    interval: 3000,
+    enabled: !!data?.data,
+    key: taskId,
     limit(constraint) {
-      return status.current === ExpressionRecognitionTaskStatus.Success;
+      return (
+        status.current !== ExpressionRecognitionTaskStatus.Success &&
+        status.current !== ExpressionRecognitionTaskStatus.Failed
+      );
     },
   });
 
@@ -68,8 +87,7 @@ export default function ExpressionRecognitionTaskStatusComponent() {
     case ExpressionRecognitionTaskStatus.Failed:
       color = Colors.sentimentError;
       indicator = <XCircle size={24} />;
-      message =
-        "Oh no, an unexpected error has occurred while processing your images. See below for details";
+      message = `Oh no, an unexpected error has occurred while processing your images. Please try again later.`;
       break;
   }
 
@@ -90,21 +108,16 @@ export default function ExpressionRecognitionTaskStatusComponent() {
           <Flex gap={8}>
             {indicator}
             <Text wrap w="100%">
-              {message}
+              {`${message} `}
+              {data?.data.error && (
+                <Text span fw="bold">
+                  {data?.data.error}
+                </Text>
+              )}
             </Text>
           </Flex>
         </Alert>
       </Flex>
-      {data?.data.error && (
-        <Alert color={Colors.sentimentError} mt={16}>
-          <Flex direction="row" align="center">
-            <Warning />
-            <Text wrap w="100%">
-              {data.data.error}
-            </Text>
-          </Flex>
-        </Alert>
-      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import pydantic
 from common.constants import EnvironmentVariables
 import httpx
 
-from models.api import ApiResult
+from models.api import ApiErrorResult
 from models.expression import ExpressionRecognitionTaskResultResource, ExpressionRecognitionTaskStatus, ExpressionRecognitionTaskUpdateSchema
 
 class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
@@ -18,7 +18,7 @@ class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
     content = jwt.encode(ExpressionRecognitionApiTokenData(issuer="Expression Recognition Service").model_dump(), secret, algorithm="HS256")
     return content
 
-api_communicator = httpx.AsyncClient(
+api_communicator = httpx.Client(
   headers={
     "Authorization": f"Bearer {ExpressionRecognitionApiTokenData.token()}",
     "Content-Type": "application/json"
@@ -28,41 +28,44 @@ api_communicator = httpx.AsyncClient(
 logger = logging.getLogger("API Service Communicator")
 URL = EnvironmentVariables.get(EnvironmentVariables.ApiServerUrl)
 
-async def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
+def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
   logger.error(f"Operation [Update Task]: Sending a task update request to API server with payload {payload.model_dump_json()}")
   try:
-    res = await api_communicator.patch(
+    res = api_communicator.patch(
       f"{URL}/api/tasks/{id}",
-      data=payload.model_dump()
+      json=payload.model_dump()
     )
   except httpx.HTTPError as e:
     logger.error(f"Operation [Update Task]: Error => {e}")
     return
   
-  data = ApiResult.model_validate(res.json())
   if res.status_code == 200:
     logger.info(f"Operation [Update Task]: Successful")
   else:
-    logger.error(f"Operation [Update Task]: Failed with message {data.message}")
-  return data
+    try:
+      json = res.json()
+      data = ApiErrorResult.model_validate(json)
+      logger.error(f"Operation [Update Task]: Failed with message {data.message}")
+    except Exception as e:
+      logger.error(f"Operation [Update Task]: An unexpected error has occurred => {e}")
 
 
-async def report_operation_pending(id: str):
-  await update_task(id, ExpressionRecognitionTaskUpdateSchema(
+def report_operation_pending(id: str):
+  update_task(id, ExpressionRecognitionTaskUpdateSchema(
     status=ExpressionRecognitionTaskStatus.Pending,
     error=None,
     results=None,
   ))
 
-async def report_operation_failed(id: str, error: str):
-  await update_task(id, ExpressionRecognitionTaskUpdateSchema(
+def report_operation_failed(id: str, error: str):
+  update_task(id, ExpressionRecognitionTaskUpdateSchema(
     status=ExpressionRecognitionTaskStatus.Failed,
     error=error,
     results=None,
   ))
 
-async def report_operation_successful(id: str, results: Sequence[ExpressionRecognitionTaskResultResource]):
-  await update_task(id, ExpressionRecognitionTaskUpdateSchema(
+def report_operation_successful(id: str, results: Sequence[ExpressionRecognitionTaskResultResource]):
+  update_task(id, ExpressionRecognitionTaskUpdateSchema(
     status=ExpressionRecognitionTaskStatus.Success,
     error=None,
     results=results,

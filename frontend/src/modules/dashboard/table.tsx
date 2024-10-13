@@ -2,7 +2,10 @@ import Pagination, { usePaginateData } from "@/components/standard/pagination";
 import { TaskFile, useTaskContext } from "./components/context";
 import { Flex, Table } from "@mantine/core";
 import Image from "next/image";
-import { ExpressionRecognitionTaskResultModel } from "@/api/task";
+import {
+  ExpressionRecognitionTaskResultModel,
+  FacialExpressionProbabilities,
+} from "@/api/task";
 import DashboardStyles from "./dashboard.module.css";
 import Text from "@/components/standard/text";
 
@@ -77,7 +80,12 @@ export default function DashboardTable() {
                   />
                 </Table.Td>
                 <Table.Td>{item.file.name}</Table.Td>
-                <Table.Td>{item.result?.probabilities.classify()}</Table.Td>
+                <Table.Td>
+                  {item.result?.probabilities &&
+                    FacialExpressionProbabilities.classify(
+                      item.result?.probabilities
+                    )}
+                </Table.Td>
                 {/* <Table.Td>
                   <ActionIcon>
                     <Eye />

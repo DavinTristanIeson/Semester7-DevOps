@@ -34,9 +34,8 @@ export function TaskContextProvider(props: React.PropsWithChildren) {
   );
 }
 
-type UseTaskContextReturn = Omit<TaskContextType, "files" | "setFiles"> & {
-  files: TaskFile[];
-  setFiles(file: File[]): void;
+type UseTaskContextReturn = TaskContextType & {
+  setStagedFiles(file: File[]): void;
 };
 
 export function useTaskContext(): UseTaskContextReturn {
@@ -46,7 +45,8 @@ export function useTaskContext(): UseTaskContextReturn {
     taskId,
     setTaskId,
     files,
-    setFiles(files: File[]) {
+    setFiles,
+    setStagedFiles(files: File[]) {
       const taskfiles = files.map((file) => {
         return {
           file,

@@ -60,7 +60,7 @@ interface UsePollingProps {
 }
 
 export function usePolling(props: UsePollingProps) {
-  const { fn, interval, limit, key, enabled, callbacks } = props;
+  const { fn, interval, limit, key, enabled = true, callbacks } = props;
   const { setInterval, clearInterval } = useSingletonTimeout();
   const startTime = React.useRef(Date.now());
   const times = React.useRef(0);

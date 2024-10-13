@@ -45,7 +45,19 @@ def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
       for result in payload.results:
         db.add(ExpressionRecognitionTaskResultModel(
           task_id=task.id,
-          **result.model_dump(),
+          filename=result.filename,
+          representative_x=result.representative_point.x,
+          representative_y=result.representative_point.y,
+          x0=result.bbox.x0,
+          x1=result.bbox.x1,
+          y0=result.bbox.y0,
+          y1=result.bbox.y1,
+          happy=result.probabilities.happy,
+          angry=result.probabilities.angry,
+          surprised=result.probabilities.surprised,
+          disgusted=result.probabilities.disgusted,
+          sad=result.probabilities.sad,
+          neutral=result.probabilities.neutral,
         ))
     
     if payload.error is not None:

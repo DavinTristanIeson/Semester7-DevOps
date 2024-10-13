@@ -34,7 +34,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
     error_mapper[error_path[-1]] = error['msg']
 
-  message = f"{'.'.join(raw_errors[0]['loc'])}: {raw_errors[0]['msg']}"
+  message = str(raw_errors[0]['msg'])
   return JSONResponse(
     status_code=400,
     content=ApiErrorResult(message=message, errors=errors).model_dump(),
