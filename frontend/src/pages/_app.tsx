@@ -1,19 +1,17 @@
 import "reflect-metadata";
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import "@/styles/globals.css";
-import {
-  createTheme,
-  MantineProvider,
-} from "@mantine/core";
+import "@mantine/dropzone/styles.css";
+import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/common/api/query-client";
 import { PrivateRoutes } from "@/common/auth/private-routes";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import mantineTheme from "@/common/constants/theme";
 
-const mantineTheme = createTheme({});
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>

@@ -3,7 +3,6 @@ enum NavigationRoutes {
   Login = '/login',
   Register = '/register',
   AlbumView = '/album/[id]',
-  AlbumCreate = '/album/create'
 }
 
 export default NavigationRoutes;

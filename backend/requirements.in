@@ -1,5 +1,9 @@
 fastapi[standard]
-fastapi-pagination
+sqlalchemy[asyncio]
+pydantic
 PyJWT
-sqlalchemy
+httpx
 bcrypt
+apscheduler
+python-multipart
+python-dotenv

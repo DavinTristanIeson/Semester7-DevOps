@@ -2,7 +2,10 @@ import * as Yup from 'yup';
 
 export function AuthFormSchema() {
   return Yup.object({
-    email: Yup.string().email().required(),
+    username: Yup.string().min(5).required().matches(/[a-zA-Z0-9]/, {
+      message: "Username must only consist of letters or numbers",
+      excludeEmptyString: true,
+    }),
     password: Yup.string().min(8).required(),
   });
 }
