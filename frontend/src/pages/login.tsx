@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import NavigationRoutes from "@/common/constants/routes";
 import Link from "next/link";
 import AuthenticationForm from "@/modules/auth/form";
-import { Box, lighten, Title } from "@mantine/core";
+import { Box, Title } from "@mantine/core";
 
 import AuthStyles from "@/styles/auth.module.css";
 import Colors from "@/common/constants/colors";
@@ -46,6 +46,6 @@ export default function LoginPage() {
           </text>
         </Box>
       </Box>
-    </Box>
+    </Box >
   );
 }

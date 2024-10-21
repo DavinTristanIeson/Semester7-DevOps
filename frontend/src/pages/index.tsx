@@ -22,13 +22,13 @@ export default function HomePage() {
           className={NavbarStyles["logout-button"]}
           loading={isPending}
           onClick={handleErrorFn(async () => {
-            const res = await logout();
-            if (res.message) {
-              showNotification({
-                message: res.message,
-                color: Colors.Sentiment.Info,
-              });
-            }
+            // const res = await logout();
+            // if (res.message) {
+            //   showNotification({
+            //     message: res.message,
+            //     color: Colors.Sentiment.Info,
+            //   });
+            // }
             router.replace(NavigationRoutes.Login);
             SessionToken.clear();
           })}
