@@ -20,6 +20,7 @@ class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
   @staticmethod
   def token()->str:
     secret = EnvironmentVariables.get(EnvironmentVariables.ExpressionRecognitionApiSecret)
+    print(secret)
     content = jwt.encode(ExpressionRecognitionApiTokenData(issuer="Parallel API Backend").model_dump(), secret, algorithm="HS256")
     return content
   
