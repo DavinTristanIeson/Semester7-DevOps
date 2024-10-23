@@ -1,4 +1,3 @@
-import atexit
 import logging
 import os
 from queue import Empty, Queue
@@ -6,10 +5,26 @@ import random
 import shutil
 import threading
 import zipfile
+
+import cv2 as cv
+
 from common.constants import FilePaths
+from common.metaclass import Singleton
 import controllers
 from controllers.tasks import EnqueuedExpressionRecognitionTask
 from models.expression import BoundingBox, ExpressionRecognitionTaskResultResource, FacialExpressionProbabilities, Point
+
+import keras
+import retina
+
+class ExpressionRecognitionModel(metaclass=Singleton):
+  model: keras.Model
+  def initialize(self):
+    model = keras.models.load_model(retina.face.EXPRESSION_RECOGNITION_MODEL_PATH)
+    retina.face.get_face_haar_classifier()
+    retina.face.get_face_landmark_detector()
+
+    self.model = model
 
 logger = logging.getLogger("Expression Recognition")
 
@@ -18,19 +33,33 @@ def expression_recognition(
 ):
   results: list[ExpressionRecognitionTaskResultResource] = []
   for entry in os.scandir(path):
-    results.append(ExpressionRecognitionTaskResultResource(
-      bbox=BoundingBox(x0=0, x1=1, y0=0, y1=1),
-      filename=entry.name,
-      probabilities=FacialExpressionProbabilities(
-        angry=random.random(),
-        disgusted=random.random(),
-        happy=random.random(),
-        neutral=random.random(),
-        sad=random.random(),
-        surprised=random.random(),
-      ),
-      representative_point=Point(x=0, y=0),
-    ))
+    try:
+      img = cv.imread(entry.path)
+      feature = retina.face.face2vec(img)
+
+      if feature is None:
+        logger.warning(f"Found no faces in {entry.path}.")
+        continue
+
+      ExpressionRecognitionModel().model(feature)
+
+      
+      results.append(ExpressionRecognitionTaskResultResource(
+        bbox=BoundingBox(x0=0, x1=1, y0=0, y1=1),
+        filename=entry.name,
+        probabilities=FacialExpressionProbabilities(
+          angry=random.random(),
+          disgusted=random.random(),
+          happy=random.random(),
+          neutral=random.random(),
+          sad=random.random(),
+          surprised=random.random(),
+        ),
+        representative_point=Point(x=0, y=0),
+      ))
+    except Exception as e:
+      logger.error(f"Skipping {entry.path} due to an unexpected error. Error: {e}")
+  
   return results
 
 def service(queue: Queue[EnqueuedExpressionRecognitionTask], stop_event: threading.Event):

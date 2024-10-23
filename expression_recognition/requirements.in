@@ -5,3 +5,10 @@ python-multipart
 python-dotenv
 PyJWT
 aiofiles
+
+tensorflow-cpu
+opencv-python
+opencv-contrib-python
+numpy
+scipy
+scikit-image

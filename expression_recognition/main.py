@@ -3,6 +3,7 @@ import threading
 import dotenv
 dotenv.load_dotenv(override=True)
 
+from controllers.expression import ExpressionRecognitionModel
 import routes
 from common.constants import EnvironmentVariables
 from fastapi import FastAPI
@@ -15,6 +16,7 @@ import routes
 @asynccontextmanager
 async def lifespan(app):
   controllers.tasks.initialize_queue()
+  ExpressionRecognitionModel().initialize()
   stop_event = threading.Event()
   services: list[threading.Thread] = []
   for _ in range(4):
