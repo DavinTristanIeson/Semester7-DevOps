@@ -7,6 +7,7 @@ import threading
 import zipfile
 
 import cv2 as cv
+import numpy as np
 
 from common.constants import FilePaths
 from common.metaclass import Singleton
@@ -16,6 +17,7 @@ from models.expression import BoundingBox, ExpressionRecognitionTaskResultResour
 
 import keras
 import retina
+import numpy.typing as npt
 
 class ExpressionRecognitionModel(metaclass=Singleton):
   model: keras.Model
@@ -32,20 +34,25 @@ def expression_recognition(
   path: str,
 ):
   results: list[ExpressionRecognitionTaskResultResource] = []
+  features_list: list[npt.NDArray] = []
+  model = ExpressionRecognitionModel().model
+
   for entry in os.scandir(path):
     try:
       img = cv.imread(entry.path)
       feature = retina.face.face2vec(img)
+    except Exception as e:
+      logger.error(f"Skipping {entry.path} due to an unexpected error. Error: {e}")
+      continue
 
-      if feature is None:
-        logger.warning(f"Found no faces in {entry.path}.")
-        continue
+    if feature is None:
+      logger.warning(f"Found no faces in {entry.path}.")
+      continue
 
-      ExpressionRecognitionModel().model(feature)
-
-      
+    features_list.append(feature[0])
+    for rect in feature[1]:
       results.append(ExpressionRecognitionTaskResultResource(
-        bbox=BoundingBox(x0=0, x1=1, y0=0, y1=1),
+        bbox=BoundingBox(x0=rect.x0, x1=rect.x1, y0=rect.y0, y1=rect.y1),
         filename=entry.name,
         probabilities=FacialExpressionProbabilities(
           angry=random.random(),
@@ -55,16 +62,28 @@ def expression_recognition(
           sad=random.random(),
           surprised=random.random(),
         ),
-        representative_point=Point(x=0, y=0),
       ))
-    except Exception as e:
-      logger.error(f"Skipping {entry.path} due to an unexpected error. Error: {e}")
+
+  features = np.vstack(features_list)
+  if len(results) == 0:
+    return results
+  
+  predicted = model.predict(features)
+  for idx, pred in enumerate(predicted):
+
+    results[idx].probabilities = FacialExpressionProbabilities(
+      angry=float(pred[0]),
+      disgusted=float(pred[1]),
+      happy=float(pred[2]),
+      neutral=float(pred[3]),
+      sad=float(pred[4]),
+      surprised=float(pred[5]),
+    )
   
   return results
 
 def service(queue: Queue[EnqueuedExpressionRecognitionTask], stop_event: threading.Event):
   while not stop_event.is_set():
-    print("Hello!")
     try: 
       task = queue.get(timeout=1)
     except Empty:

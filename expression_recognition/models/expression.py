@@ -30,7 +30,6 @@ class FacialExpressionProbabilities(pydantic.BaseModel):
 
 class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
   filename: str
-  representative_point: Point
   bbox: BoundingBox
   probabilities: FacialExpressionProbabilities
 

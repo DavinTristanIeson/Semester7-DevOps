@@ -124,7 +124,7 @@ def face_landmark_detection(img: cv.typing.MatLike)->FaceLandmark:
 
 def lbp_histograms(img: cv.typing.MatLike, rectangles: Sequence[Rectangle])->npt.NDArray:
   histograms: list[npt.NDArray] = []
-  BIN_COUNT = 10
+  BIN_COUNT = 6
   for rect in rectangles:
     chunk = img[rect.slice]
     radius = 1
@@ -139,7 +139,7 @@ def lbp_histograms(img: cv.typing.MatLike, rectangles: Sequence[Rectangle])->npt
 
 def grid_lbp(img: cv.typing.MatLike):
   dims = Dimension.from_shape(img.shape)
-  grid_rects = dims.partition(7, 7)
+  grid_rects = dims.partition(8, 8)
   return lbp_histograms(img, grid_rects)
 
 class FacialExpressionLabel(Enum):
@@ -153,6 +153,10 @@ class FacialExpressionLabel(Enum):
   @staticmethod
   def target_names():
     return tuple(map(lambda x: x.name, sorted(FacialExpressionLabel.__members__.values(), key=lambda x: x.value)))
+  
+  @staticmethod
+  def targets():
+    return sorted(FacialExpressionLabel.__members__.values(), key=lambda x: x.value)
 
 
 
@@ -227,7 +231,7 @@ def face_alignment(img: cv.typing.MatLike, landmark: FaceLandmark):
   return img
 
 
-def face2vec(original: cv.typing.MatLike)->Optional[npt.NDArray]:
+def face2vec(original: cv.typing.MatLike)->Optional[tuple[npt.NDArray, Sequence[Rectangle]]]:
   img = retina.cvutil.resize_image(original, STANDARD_DIMENSIONS) # Resize
   img = cv.cvtColor(img, cv.COLOR_BGR2GRAY) # Grayscale
   img = retina.colors.clahe(img) # Contrast adjustment
@@ -245,4 +249,4 @@ def face2vec(original: cv.typing.MatLike)->Optional[npt.NDArray]:
   if len(features) == 0:
     return None
   
-  return np.array(features)
+  return np.array(features), face_rects

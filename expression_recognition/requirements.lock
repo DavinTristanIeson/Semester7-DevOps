@@ -110,12 +110,15 @@ numpy==1.26.4
     #   imageio
     #   keras
     #   ml-dtypes
+    #   opencv-contrib-python
     #   opencv-python
     #   scikit-image
     #   scipy
     #   tensorboard
     #   tensorflow-intel
     #   tifffile
+opencv-contrib-python==4.10.0.84
+    # via -r requirements.in
 opencv-python==4.10.0.84
     # via -r requirements.in
 opt-einsum==3.4.0
