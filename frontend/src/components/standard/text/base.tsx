@@ -20,7 +20,6 @@ const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
     color: textColor = "text",
     style,
     wrap,
-    isResponsive = false,
     ...rest
   } = props;
 

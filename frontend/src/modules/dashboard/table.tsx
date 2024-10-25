@@ -10,6 +10,7 @@ import DashboardStyles from "./dashboard.module.css";
 import Text from "@/components/standard/text";
 
 type DashboardTableType = Omit<TaskFile, "results"> & {
+  id: string;
   result: ExpressionRecognitionTaskResultModel | null;
 };
 
@@ -19,6 +20,7 @@ export default function DashboardTable() {
     if (!file.results) {
       return [
         {
+          id: file.file.name,
           file: file.file,
           url: file.url,
           result: null,
@@ -27,6 +29,7 @@ export default function DashboardTable() {
     }
     return (file.results ?? []).map((result) => {
       return {
+        id: result.id,
         file: file.file,
         url: file.url,
         result,
@@ -44,11 +47,12 @@ export default function DashboardTable() {
         direction="column"
       >
         <Text ta="center" size="xl">
-          Oops, it looks like you haven't uploaded any files to our service at
-          the moment.
+          Oops, it looks like you haven&apos;t uploaded any files to our service
+          at the moment.
         </Text>
         <Text ta="center">
-          Why don't you give it a try by adding a few images to the area above?
+          Why don&apos;t you give it a try by adding a few images to the area
+          above?
         </Text>
       </Flex>
     );
@@ -69,7 +73,7 @@ export default function DashboardTable() {
         <Table.Tbody>
           {data.map((item, index) => {
             return (
-              <Table.Tr>
+              <Table.Tr key={item.id}>
                 <Table.Td>{from + index + 1}</Table.Td>
                 <Table.Td>
                   <Image

@@ -2,10 +2,8 @@ import { useLogin } from "@/api/auth/mutation";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import NavigationRoutes from "@/common/constants/routes";
-import Link from "next/link";
 import AuthenticationForm from "@/modules/auth/form";
 
-import AuthStyles from "@/styles/auth.module.css";
 import Colors from "@/common/constants/colors";
 import LoginLayout, { LoginBox } from "@/modules/auth/layout";
 import Text from "@/components/standard/text/base";
@@ -31,7 +29,7 @@ export default function LoginPage() {
           }}
         />
         <Text>
-          Don't have an account?
+          Don&apos;t have an account?
           <TextLink href={NavigationRoutes.Register} span>
             Register
           </TextLink>

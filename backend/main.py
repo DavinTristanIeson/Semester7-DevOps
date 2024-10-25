@@ -28,4 +28,4 @@ app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], all
 app.include_router(routes.auth.router, prefix='/api/auth')
 app.include_router(routes.tasks.router, prefix='/api/tasks')
 # https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html
-# app.mount("/", StaticFiles(directory="views", html = True), name="static")
+app.mount("/", StaticFiles(directory="views", html = True), name="static")

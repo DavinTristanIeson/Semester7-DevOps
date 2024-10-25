@@ -1,12 +1,8 @@
-import { ActionIcon, Box, Button, Flex, Title } from "@mantine/core";
+import { ActionIcon, Box, Flex, Title } from "@mantine/core";
 import LayoutStyles from "./layout.module.css";
 import { handleErrorFn } from "@/common/utils/form";
-import { useLogout } from "@/api/auth";
-import { showNotification } from "@mantine/notifications";
 import Colors from "@/common/constants/colors";
 import { useRouter } from "next/router";
-import NavigationRoutes from "@/common/constants/routes";
-import { SessionToken } from "@/common/auth/token";
 import React from "react";
 import { ArrowLeft } from "@phosphor-icons/react";
 import PromiseButton from "../standard/button/promise";
