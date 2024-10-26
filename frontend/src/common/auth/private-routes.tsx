@@ -39,7 +39,7 @@ export function PrivateRoutes(props: React.PropsWithChildren) {
         message: "Redirecting to login screen...",
         loading: true,
         autoClose: DELAY_MILLIS + 1000,
-        color: Colors.Sentiment.Info,
+        color: Colors.sentimentInfo,
       });
       isRelocating.current = true;
       timeoutRef.current = setTimeout(() => {
