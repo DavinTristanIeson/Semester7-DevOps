@@ -1,6 +1,6 @@
 import Pagination, { usePaginateData } from "@/components/standard/pagination";
 import { TaskFile, useTaskContext } from "./components/context";
-import { ActionIcon, Flex, Table } from "@mantine/core";
+import { ActionIcon, Flex, List, Table } from "@mantine/core";
 import Image from "next/image";
 import {
   ExpressionRecognitionTaskResultModel,
@@ -53,6 +53,26 @@ export default function DashboardTable() {
       //   </Text>
       // </Flex>
       <>
+        <List className={DashboardStyles["list"]}>
+          <List.Item className={DashboardStyles["list-item"]}>
+            <Text>Happy</Text>
+          </List.Item>
+          <List.Item className={DashboardStyles["list-item"]}>
+            <Text>Sad</Text>
+          </List.Item>
+          <List.Item className={DashboardStyles["list-item"]}>
+            <Text>Angry</Text>
+          </List.Item>
+          <List.Item className={DashboardStyles["list-item"]}>
+            <Text>Disgust</Text>
+          </List.Item>
+          <List.Item className={DashboardStyles["list-item"]}>
+            <Text>Neutral</Text>
+          </List.Item>
+          <List.Item className={DashboardStyles["list-item"]}>
+            <Text>Surprised</Text>
+          </List.Item>
+        </List>
         <Table style={{ minWidth: '100%', backgroundColor: 'white', border: '1px solid #E5E7EB', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
           <Table.Thead>
             <Table.Tr style={{ backgroundColor: '#F3F4F6', borderBottom: '1px solid #D1D5DB' }}>

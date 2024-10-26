@@ -1,6 +1,38 @@
 .empty-view {
-  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 40%, rgba(255, 255, 255, 0.1));
+  background-image: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 40%,
+    rgba(255, 255, 255, 0.1)
+  );
   min-height: 10rem;
   padding: 2rem;
   border-radius: var(--mantine-radius-xl);
+}
+
+.list {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  max-width: 100%;
+}
+
+.list-item {
+  width: 100px;
+  text-align: center;
+  padding: 0.25rem 1rem;
+  font-size: 1rem;
+  position: relative;
+  background-color: #f3f4f6;
+  border-radius: 30px;
+  user-select: none;
+  transition: box-shadow 0.2s, outline 0.2s;
+}
+
+.list-item:hover {
+  box-shadow: 0 2px 4px rgba(20, 184, 166, 0.5);
+  outline: 2px solid #38b2ac;
 }
