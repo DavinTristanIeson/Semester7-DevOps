@@ -21,7 +21,7 @@
 }
 
 .filter-button {
-  width: 100px;
+  width: 110px;
   text-align: center;
   padding: 0.25rem 1rem;
   font-size: 1rem;
@@ -37,7 +37,7 @@
   outline: 2px solid dimgray;
 }
 
-.filter-button:active {
+.filter-button.active {
   box-shadow: 0 2px 4px dimgray;
   outline: 2px solid dimgray;
 }
