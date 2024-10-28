@@ -20,7 +20,7 @@
   max-width: 100%;
 }
 
-.list-item {
+.filter-button {
   width: 100px;
   text-align: center;
   padding: 0.25rem 1rem;
@@ -32,7 +32,12 @@
   transition: box-shadow 0.2s, outline 0.2s;
 }
 
-.list-item:hover {
-  box-shadow: 0 2px 4px rgba(20, 184, 166, 0.5);
-  outline: 2px solid #38b2ac;
+.filter-button:hover {
+  box-shadow: 0 2px 4px dimgray;
+  outline: 2px solid dimgray;
+}
+
+.filter-button:active {
+  box-shadow: 0 2px 4px dimgray;
+  outline: 2px solid dimgray;
 }
