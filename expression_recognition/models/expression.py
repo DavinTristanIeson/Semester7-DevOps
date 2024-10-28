@@ -32,6 +32,8 @@ class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
   filename: str
   bbox: BoundingBox
   probabilities: FacialExpressionProbabilities
+  width: int
+  height: int
 
 class ExpressionRecognitionTaskResource(pydantic.BaseModel):
   model_config = pydantic.ConfigDict(use_enum_values=True)

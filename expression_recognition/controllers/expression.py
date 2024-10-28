@@ -10,6 +10,7 @@ import cv2 as cv
 import numpy as np
 
 from common.constants import FilePaths
+from common.logger import RegisteredLogger
 from common.metaclass import Singleton
 import controllers
 from controllers.tasks import EnqueuedExpressionRecognitionTask
@@ -28,7 +29,7 @@ class ExpressionRecognitionModel(metaclass=Singleton):
 
     self.model = model
 
-logger = logging.getLogger("Expression Recognition")
+logger = RegisteredLogger().provision("Expression Recognition")
 
 def expression_recognition(
   path: str,
@@ -62,6 +63,8 @@ def expression_recognition(
           sad=random.random(),
           surprised=random.random(),
         ),
+        width=img.shape[1],
+        height=img.shape[0],
       ))
 
   features = np.vstack(features_list)

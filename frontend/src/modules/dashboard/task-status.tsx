@@ -20,9 +20,6 @@ export default function ExpressionRecognitionTaskStatusComponent() {
     }
   );
 
-  const status = React.useRef(ExpressionRecognitionTaskStatus.NotStarted);
-  status.current = data?.data.status ?? ExpressionRecognitionTaskStatus.Success;
-
   React.useEffect(() => {
     if (
       data?.data.results == null ||
@@ -50,14 +47,11 @@ export default function ExpressionRecognitionTaskStatusComponent() {
       refetch();
     },
     interval: 3000,
-    enabled: !!data?.data,
+    enabled:
+      !!data?.data &&
+      (data.data?.status === ExpressionRecognitionTaskStatus.NotStarted ||
+        data.data?.status === ExpressionRecognitionTaskStatus.Pending),
     key: taskId,
-    limit() {
-      return (
-        status.current !== ExpressionRecognitionTaskStatus.Success &&
-        status.current !== ExpressionRecognitionTaskStatus.Failed
-      );
-    },
   });
 
   if (!taskId) {

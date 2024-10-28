@@ -7,6 +7,7 @@ from queue import Queue
 import pydantic
 
 from common.constants import TIMESTAMP_SEPARATOR, FilePaths
+from common.logger import RegisteredLogger
 
 class EnqueuedExpressionRecognitionTask(pydantic.BaseModel):
   path: str
@@ -14,7 +15,7 @@ class EnqueuedExpressionRecognitionTask(pydantic.BaseModel):
 
 ExpressionRecognitionTaskQueue: Queue[EnqueuedExpressionRecognitionTask] = Queue()
 
-logger = logging.getLogger("Expression Recognition")
+logger = RegisteredLogger().provision("Expression Recognition")
 
 def initialize_queue():
   # Load queue

@@ -1,13 +1,14 @@
 import Pagination, { usePaginateData } from "@/components/standard/pagination";
 import { TaskFile, useTaskContext } from "./components/context";
 import { Flex, Table } from "@mantine/core";
-import Image from "next/image";
+import NextImage from "next/image";
 import {
   ExpressionRecognitionTaskResultModel,
   FacialExpressionProbabilities,
 } from "@/api/task";
 import DashboardStyles from "./dashboard.module.css";
 import Text from "@/components/standard/text";
+import React from "react";
 
 type DashboardTableType = Omit<TaskFile, "results"> & {
   id: string;
@@ -16,26 +17,28 @@ type DashboardTableType = Omit<TaskFile, "results"> & {
 
 export default function DashboardTable() {
   const { files } = useTaskContext();
-  const flattenedFiles = files.flatMap((file) => {
-    if (!file.results) {
-      return [
-        {
-          id: file.file.name,
+  const flattenedFiles = React.useMemo(() => {
+    return files.flatMap((file) => {
+      if (!file.results) {
+        return [
+          {
+            id: file.file.name,
+            file: file.file,
+            url: file.url,
+            result: null,
+          },
+        ];
+      }
+      return (file.results ?? []).map((result) => {
+        return {
+          id: result.id,
           file: file.file,
           url: file.url,
-          result: null,
-        },
-      ];
-    }
-    return (file.results ?? []).map((result) => {
-      return {
-        id: result.id,
-        file: file.file,
-        url: file.url,
-        result,
-      } as DashboardTableType;
+          result,
+        } as DashboardTableType;
+      });
     });
-  });
+  }, [files]);
   const { data, meta, from, pagination } = usePaginateData(flattenedFiles);
 
   if (flattenedFiles.length === 0) {
@@ -76,7 +79,7 @@ export default function DashboardTable() {
               <Table.Tr key={item.id}>
                 <Table.Td>{from + index + 1}</Table.Td>
                 <Table.Td>
-                  <Image
+                  <NextImage
                     src={item.url}
                     alt={item.file.name}
                     width={96}
@@ -90,11 +93,6 @@ export default function DashboardTable() {
                       item.result?.probabilities
                     )}
                 </Table.Td>
-                {/* <Table.Td>
-                  <ActionIcon>
-                    <Eye />
-                  </ActionIcon>
-                </Table.Td> */}
               </Table.Tr>
             );
           })}

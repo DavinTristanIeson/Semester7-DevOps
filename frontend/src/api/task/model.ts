@@ -1,5 +1,5 @@
-import { Expose, Type } from "class-transformer";
-import { BoundingBox, Point } from "../common/model";
+import { Type } from "class-transformer";
+import { BoundingBox } from "../common/model";
 
 // Model
 export enum ExpressionRecognitionTaskStatus {
@@ -48,12 +48,11 @@ export class ExpressionRecognitionTaskResultModel {
   @Type(() => BoundingBox)
   bbox: BoundingBox;
 
-  @Expose({ name: "representative_point" })
-  @Type(() => Point)
-  representativePoint: Point;
-
   @Type(() => FacialExpressionProbabilities)
   probabilities: FacialExpressionProbabilities;
+
+  width: number;
+  height: number;
 }
 
 export class ExpressionRecognitionTaskModel {
