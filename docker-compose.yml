@@ -9,8 +9,12 @@ services:
       REFRESH_TOKEN_SECRET: secret_refresh
       EXPRESSION_RECOGNITION_API_URL: http://127.0.0.1:8002
       EXPRESSION_RECOGNITION_API_SECRET: secret_expression
+      POSTGRES_USER: Parallel
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: parallel
+      POSTGRES_HOST: 127.0.0.1:54320
   expression_recognition:
-    build: 
+    build:
       dockerfile: ./expression_recognition/Dockerfile
     ports:
       - 8002:8000

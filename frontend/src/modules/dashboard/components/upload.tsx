@@ -7,7 +7,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import Text from "@/components/standard/text";
-import { Flex, Group, SimpleGrid } from "@mantine/core";
+import { Flex, Group } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import Colors from "@/common/constants/colors";
 import Button from "@/components/standard/button/base";
@@ -83,6 +83,7 @@ export function TaskFileUploadManager() {
     return stagedFiles.map((file, index) => {
       const imageUrl = URL.createObjectURL(file);
       return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           key={index}
           src={imageUrl}

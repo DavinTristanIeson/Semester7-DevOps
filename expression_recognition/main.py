@@ -5,16 +5,19 @@ dotenv.load_dotenv(override=True)
 
 from controllers.expression import ExpressionRecognitionModel
 import routes
-from common.constants import EnvironmentVariables
+from common.constants import EnvironmentVariables, FilePaths
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import controllers
 import routes
+import os
 
 
 @asynccontextmanager
 async def lifespan(app):
+  if not os.path.exists(FilePaths.TempData):
+    os.mkdir(FilePaths.TempData)
   controllers.tasks.initialize_queue()
   ExpressionRecognitionModel().initialize()
   stop_event = threading.Event()

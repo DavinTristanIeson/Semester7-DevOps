@@ -4,6 +4,8 @@ WORKDIR /var/www/html
 
 COPY ./expression_recognition .
 
+RUN python scripts/download-models.py
+
 RUN pip install -r requirements.lock
 
 CMD ["fastapi", "run"]

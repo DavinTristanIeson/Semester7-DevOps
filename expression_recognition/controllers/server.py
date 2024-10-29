@@ -6,6 +6,7 @@ import pydantic
 from common.constants import EnvironmentVariables
 import httpx
 
+from common.logger import RegisteredLogger
 from models.api import ApiErrorResult
 from models.expression import ExpressionRecognitionTaskResultResource, ExpressionRecognitionTaskStatus, ExpressionRecognitionTaskUpdateSchema
 
@@ -25,7 +26,7 @@ api_communicator = httpx.Client(
   }
 )
 
-logger = logging.getLogger("API Service Communicator")
+logger = RegisteredLogger().provision("Expression Recognition")
 URL = EnvironmentVariables.get(EnvironmentVariables.ApiServerUrl)
 
 def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):

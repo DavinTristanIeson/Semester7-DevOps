@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { ApiFetch } from "@/common/api/fetch";
 import { ApiQueryFunction } from "@/common/api/fetch-types";
-import { IdInput, PaginatedInput } from "../common/model";
-import { ApiResult, PaginatedApiResult } from "@/common/api/model";
+import { IdInput } from "../common/model";
+import { ApiResult } from "@/common/api/model";
 import { ExpressionRecognitionTaskModel } from "./model";
 import { StaleTimes } from "../common/query";
 
 export const TaskQueryKeys = {
   taskKey: ['getTaskKey'],
-  task(input: IdInput){
+  task(input: IdInput) {
     return [TaskQueryKeys.taskKey, input.id];
   }
 }

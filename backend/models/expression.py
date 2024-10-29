@@ -34,15 +34,14 @@ class ExpressionRecognitionTaskResultModel(SQLBaseModel):
   filename: Mapped[str] = mapped_column(String(255), nullable=False)
   task_id = mapped_column(Integer, ForeignKey(ExpressionRecognitionTaskModel.id, onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
   task: Mapped[ExpressionRecognitionTaskModel] = relationship("ExpressionRecognitionTaskModel", back_populates="results")
-
-  # dimensionally-reduced x and y
-  representative_x: Mapped[float] = mapped_column(Float, nullable=False)
-  representative_y: Mapped[float] = mapped_column(Float, nullable=False)
-
+  
   x0: Mapped[int] = mapped_column(Integer, nullable=False)
   x1: Mapped[int] = mapped_column(Integer, nullable=False)
   y0: Mapped[int] = mapped_column(Integer, nullable=False)
   y1: Mapped[int] = mapped_column(Integer, nullable=False)
+  # Size of the original image
+  width: Mapped[int] = mapped_column(Integer, nullable=False)
+  height: Mapped[int] = mapped_column(Integer, nullable=False)
   
   happy: Mapped[float] = mapped_column(Float, nullable=False)
   angry: Mapped[float] = mapped_column(Float, nullable=False)
@@ -74,9 +73,10 @@ class FacialExpressionProbabilities(pydantic.BaseModel):
 
 class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
   filename: str
-  representative_point: Point
   bbox: BoundingBox
   probabilities: FacialExpressionProbabilities
+  width: int
+  height: int
 
   @staticmethod
   def from_model(model: ExpressionRecognitionTaskResultModel)->"ExpressionRecognitionTaskResultResource":
@@ -90,16 +90,14 @@ class ExpressionRecognitionTaskResultResource(pydantic.BaseModel):
         sad=model.sad,
         surprised=model.surprised,
       ),
+      width=model.width,
+      height=model.height,
       bbox=BoundingBox(
         x0=model.x0,
         x1=model.x1,
         y0=model.y0,
         y1=model.y1
       ),
-      representative_point=Point(
-        x=model.representative_x,
-        y=model.representative_y,
-      )
     )
 
 class ExpressionRecognitionTaskResource(pydantic.BaseModel):

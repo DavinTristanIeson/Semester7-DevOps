@@ -1,5 +1,5 @@
-import { Expose, Type } from "class-transformer";
-import { BoundingBox, Point } from "../common/model";
+import { Type } from "class-transformer";
+import { BoundingBox } from "../common/model";
 
 // Model
 export enum ExpressionRecognitionTaskStatus {
@@ -31,8 +31,8 @@ export class FacialExpressionProbabilities {
     const labels = [FacialExpression.Happy, FacialExpression.Angry, FacialExpression.Surprised, FacialExpression.Disgusted, FacialExpression.Sad, FacialExpression.Neutral]
     let maxIdx = 0;
     let maxValue = 0
-    for (let i = 0; i < values.length; i++){
-      if (maxValue < values[i]){
+    for (let i = 0; i < values.length; i++) {
+      if (maxValue < values[i]) {
         maxValue = values[i];
         maxIdx = i;
       }
@@ -42,17 +42,17 @@ export class FacialExpressionProbabilities {
 }
 
 export class ExpressionRecognitionTaskResultModel {
+  id: string;
   filename: string;
 
   @Type(() => BoundingBox)
   bbox: BoundingBox;
 
-  @Expose({name: "representative_point"})
-  @Type(() => Point)
-  representativePoint: Point;
-
   @Type(() => FacialExpressionProbabilities)
   probabilities: FacialExpressionProbabilities;
+
+  width: number;
+  height: number;
 }
 
 export class ExpressionRecognitionTaskModel {

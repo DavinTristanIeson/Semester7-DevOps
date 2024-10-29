@@ -7,7 +7,7 @@ import Text from "@/components/standard/text";
 import React from "react";
 import Button from "@/components/standard/button/base";
 import { usePolling } from "@/hooks/polling";
-import { categorize, createSearchMap } from "@/common/utils/iterable";
+import { categorize } from "@/common/utils/iterable";
 
 export default function ExpressionRecognitionTaskStatusComponent() {
   const { taskId, setFiles } = useTaskContext();
@@ -19,9 +19,6 @@ export default function ExpressionRecognitionTaskStatusComponent() {
       enabled: !!taskId,
     }
   );
-
-  const status = React.useRef(ExpressionRecognitionTaskStatus.NotStarted);
-  status.current = data?.data.status ?? ExpressionRecognitionTaskStatus.Success;
 
   React.useEffect(() => {
     if (
@@ -43,21 +40,18 @@ export default function ExpressionRecognitionTaskStatusComponent() {
         };
       });
     });
-  }, [data?.data]);
+  }, [data?.data, setFiles]);
 
   usePolling({
     fn() {
       refetch();
     },
     interval: 3000,
-    enabled: !!data?.data,
+    enabled:
+      !!data?.data &&
+      (data.data?.status === ExpressionRecognitionTaskStatus.NotStarted ||
+        data.data?.status === ExpressionRecognitionTaskStatus.Pending),
     key: taskId,
-    limit(constraint) {
-      return (
-        status.current !== ExpressionRecognitionTaskStatus.Success &&
-        status.current !== ExpressionRecognitionTaskStatus.Failed
-      );
-    },
   });
 
   if (!taskId) {
