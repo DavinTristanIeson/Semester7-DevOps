@@ -17,6 +17,8 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
+        with: |
+          frontend/**
 
       - name: List all changed files
         env:
@@ -32,8 +34,10 @@ jobs:
           node-version: '20' # Atau versi Node.js yang Anda gunakan
 
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm install
 
       - name: Run tests
         if: steps.changed-files.outputs.all_changed_files != ''
+        working-directory: ./frontend
         run: npm run test
