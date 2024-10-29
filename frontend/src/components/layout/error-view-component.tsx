@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Loader, Title } from "@mantine/core";
+import { Box, Button, Flex, Title } from "@mantine/core";
 import Text from "@/components/standard/text/base";
 import Colors from "@/common/constants/colors";
 import LayoutStyles from "./layout.module.css";

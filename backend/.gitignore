@@ -1,4 +1,3 @@
 *.db
-
-
-user_files
+.env
+views

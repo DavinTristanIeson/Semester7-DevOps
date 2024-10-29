@@ -12,6 +12,7 @@ class TaskTracker(metaclass=Singleton):
     task.add_done_callback(self.tasks.remove)
 
     return task
+  
 
 __all__ = [
   "TaskTracker",

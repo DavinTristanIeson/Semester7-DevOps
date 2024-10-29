@@ -2,12 +2,9 @@ import { useRegister } from "@/api/auth/mutation";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import NavigationRoutes from "@/common/constants/routes";
-import Link from "next/link";
 import AuthenticationForm from "@/modules/auth/form";
 import Text from "@/components/standard/text/base";
 import Colors from "@/common/constants/colors";
-import AuthStyles from "@/styles/auth.module.css";
-import { TextInput } from "@mantine/core";
 import LoginLayout, { LoginBox } from "@/modules/auth/layout";
 import TextLink from "@/components/standard/button/link";
 

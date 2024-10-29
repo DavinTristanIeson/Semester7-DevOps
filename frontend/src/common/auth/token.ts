@@ -1,6 +1,5 @@
 import { SessionTokenModel, mutateRefreshToken } from '@/common/auth/api';
 import { LocalStorageKeys } from '@/common/constants/browser-storage';
-import { plainToInstance } from 'class-transformer';
 import { jwtDecode } from 'jwt-decode';
 import throttle from 'lodash/throttle';
 
