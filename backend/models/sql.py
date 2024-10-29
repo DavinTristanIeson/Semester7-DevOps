@@ -7,7 +7,7 @@ class SQLBaseModel(DeclarativeBase):
   pass
 
 # https://fastapi.tiangolo.com/tutorial/sql-databases/#create-the-sqlalchemy-engine
-engine = sqlalchemy.create_engine('sqlite:///database.db', connect_args={"check_same_thread": False})
+engine = sqlalchemy.create_engine('postgresql://Parallel:secret\@127.0.0.1:5432/parallel', connect_args={"check_same_thread": False})
 SQLSession = sessionmaker(engine, autocommit=False, autoflush=False)
 
 def UUID_column():

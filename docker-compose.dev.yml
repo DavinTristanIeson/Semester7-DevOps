@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8003:8000
+    environment:
+      ACCESS_TOKEN_SECRET: secret_access
+      REFRESH_TOKEN_SECRET: secret_refresh
+      EXPRESSION_RECOGNITION_API_URL: http://127.0.0.1:8004
+      EXPRESSION_RECOGNITION_API_SECRET: secret_expression
+  expression_recognition:
+    build: 
+      dockerfile: ./expression_recognition/Dockerfile
+    ports:
+      - 8004:8000
+    environment:
+      EXPRESSION_RECOGNITION_API_SECRET: secret_expression
+      API_SERVER_URL: http://127.0.0.1:8003
+  postgres:
+    image: postgres:15.4-alpine
+    ports:
+      - 54320:5432
+    volumes:
+      - postgres-dev:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: Parallel
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: parallel
+
+volumes:
+  postgres-dev:
