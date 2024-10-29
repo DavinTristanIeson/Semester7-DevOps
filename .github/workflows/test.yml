@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - feat/testing
 
 jobs:
   changed_files:
