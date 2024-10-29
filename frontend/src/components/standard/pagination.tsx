@@ -48,7 +48,7 @@ export default function Pagination(props: PaginationProps) {
   return (
     <RawPagination
       total={props.meta.pages}
-      value={props.page - 1}
+      value={props.page}
       onChange={props.setPage}
       p={16}
     />

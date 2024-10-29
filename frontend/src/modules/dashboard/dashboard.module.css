@@ -21,7 +21,7 @@
 }
 
 .filter-button {
-  width: 110px;
+  min-width: 110px;
   text-align: center;
   padding: 0.25rem 1rem;
   font-size: 1rem;
@@ -37,7 +37,55 @@
   outline: 2px solid dimgray;
 }
 
-.filter-button.active {
+.filter-button--active {
   box-shadow: 0 2px 4px dimgray;
   outline: 2px solid dimgray;
+}
+
+.table__root {
+  min-width: 100%;
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table__header__row {
+  background-color: #F3F4F6;
+  border-bottom: 1px solid #D1D5DB;
+}
+
+.table__header__cell {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4B5563;
+  text-transform: uppercase;
+  letter-spacing: 0.05em,
+}
+
+.table__body__row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: transparent;
+}
+
+.table__body__cell {
+  padding: 0.5rem 1.5rem;
+  white-space: nowrap;
+  font-size: 1.3rem;
+  color: #111827;
+  vertical-align: middle;
+}
+
+.table__body__cell__image__container {
+  padding: 0.5rem 1.5rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table__body__cell__image {
+  border-radius: 0.375rem;
+  object-fit: "cover";
 }
