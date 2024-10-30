@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - feat/testing
 
 jobs:
   changed_files:
@@ -31,12 +31,20 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
+        if: steps.changed-files.outputs.all_changed_files != ''
+        working-directory: ./frontend
         with:
-          node-version: '20' # Atau versi Node.js yang Anda gunakan
+          node-version: "20" # Atau versi Node.js yang Anda gunakan
 
       - name: Install dependencies
+        if: steps.changed-files.outputs.all_changed_files != ''
         working-directory: ./frontend
         run: npm install
+
+      - name: Build next.js
+        if: steps.changed-files.outputs.all_changed_files != ''
+        working-directory: ./frontend
+        run: npm run build
 
       - name: Run tests
         if: steps.changed-files.outputs.all_changed_files != ''
