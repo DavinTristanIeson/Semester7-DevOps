@@ -32,7 +32,6 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         if: steps.changed-files.outputs.all_changed_files != ''
-        working-directory: ./frontend
         with:
           node-version: "20" # Atau versi Node.js yang Anda gunakan
 
