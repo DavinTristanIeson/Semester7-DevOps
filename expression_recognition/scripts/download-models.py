@@ -1,10 +1,16 @@
 import os
+import sys
+sys.path.append(os.getcwd())
+
 import urllib.request
 
 MODELS_PATH = "retina/models"
 HAARCASCADE_FILE = os.path.join(MODELS_PATH, "haarcascade_frontalface_default.xml")
 LBFMODEL_FILE = os.path.join(MODELS_PATH, "lbfmodel.yaml")
 EXPRESSION_RECOGNITION_FILE = os.path.join(MODELS_PATH, "expression_recognition.keras")
+
+if not os.path.exists(MODELS_PATH):
+  os.mkdir(MODELS_PATH)
 
 if not os.path.exists(HAARCASCADE_FILE):
   print(f"Fetching {HAARCASCADE_FILE}...")
