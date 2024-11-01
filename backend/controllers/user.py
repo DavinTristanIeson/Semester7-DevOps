@@ -29,7 +29,9 @@ def get_user_by_auth(auth: AuthSchema)->UserModel:
   exc = ApiError("Username or password is wrong", 403)
   if user is None:
     raise exc
-  if not bcrypt.checkpw(auth.password.encode(), user.password):
+  
+  password = user.password if isinstance(user.password, bytes) else bytes(user.password, 'utf-8')
+  if not bcrypt.checkpw(auth.password.encode(), password):
     raise exc
   return user
 
@@ -42,9 +44,10 @@ def create_user(schema: AuthSchema)->UserModel:
     if check_user is not None:
       raise ApiError("Username is already in use", 400)
     
+    password = bcrypt.hashpw(schema.password.encode(), bcrypt.gensalt())
     new_user = UserModel(
       username=schema.username,
-      password=bcrypt.hashpw(schema.password.encode(), bcrypt.gensalt())
+      password=password.decode(encoding="utf-8")
     )
     db.add(new_user)
     db.flush()

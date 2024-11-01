@@ -6,7 +6,7 @@ COPY ./expression_recognition .
 
 RUN python scripts/download-models.py
 
-RUN pip install -r requirements.lock
+RUN pip install -r requirements.in
 
 CMD ["fastapi", "run"]
 

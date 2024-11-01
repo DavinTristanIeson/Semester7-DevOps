@@ -1,7 +1,10 @@
+import os
+if os.getenv("DOCKER") is None:
+  import dotenv
+  dotenv.load_dotenv(override=True)
+
 from contextlib import asynccontextmanager
 import threading
-import dotenv
-dotenv.load_dotenv(override=True)
 
 from controllers.expression import ExpressionRecognitionModel
 import routes

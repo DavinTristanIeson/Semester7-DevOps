@@ -19,36 +19,38 @@ class ExpressionRecognitionApiTokenData(pydantic.BaseModel):
     content = jwt.encode(ExpressionRecognitionApiTokenData(issuer="Expression Recognition Service").model_dump(), secret, algorithm="HS256")
     return content
 
-api_communicator = httpx.Client(
-  headers={
-    "Authorization": f"Bearer {ExpressionRecognitionApiTokenData.token()}",
-    "Content-Type": "application/json"
-  }
-)
+
 
 logger = RegisteredLogger().provision("Expression Recognition")
 URL = EnvironmentVariables.get(EnvironmentVariables.ApiServerUrl)
 
 def update_task(id: str, payload: ExpressionRecognitionTaskUpdateSchema):
   logger.error(f"Operation [Update Task]: Sending a task update request to API server with payload {payload.model_dump_json()}")
-  try:
-    res = api_communicator.patch(
-      f"{URL}/api/tasks/{id}",
-      json=payload.model_dump()
-    )
-  except httpx.HTTPError as e:
-    logger.error(f"Operation [Update Task]: Error => {e}")
-    return
-  
-  if res.status_code == 200:
-    logger.info(f"Operation [Update Task]: Successful")
-  else:
+  client = httpx.Client(
+    headers={
+      "Authorization": f"Bearer {ExpressionRecognitionApiTokenData.token()}",
+      "Content-Type": "application/json"
+    }
+  )
+  with client:
     try:
-      json = res.json()
-      data = ApiErrorResult.model_validate(json)
-      logger.error(f"Operation [Update Task]: Failed with message {data.message}")
-    except Exception as e:
-      logger.error(f"Operation [Update Task]: An unexpected error has occurred => {e}")
+      res = client.patch(
+        f"{URL}/api/tasks/{id}",
+        json=payload.model_dump()
+      )
+    except httpx.HTTPError as e:
+      logger.error(f"Operation [Update Task]: Error => {e}")
+      return
+    
+    if res.status_code == 200:
+      logger.info(f"Operation [Update Task]: Successful")
+    else:
+      try:
+        json = res.json()
+        data = ApiErrorResult.model_validate(json)
+        logger.error(f"Operation [Update Task]: Failed with message {data.message}")
+      except Exception as e:
+        logger.error(f"Operation [Update Task]: An unexpected error has occurred => {e}")
 
 
 def report_operation_pending(id: str):

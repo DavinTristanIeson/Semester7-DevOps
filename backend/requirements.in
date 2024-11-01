@@ -7,3 +7,4 @@ bcrypt
 apscheduler
 python-multipart
 python-dotenv
+psycopg2
