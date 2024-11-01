@@ -10,7 +10,7 @@ class UserModel(SQLBaseModel):
   business_id: Mapped[str] = UUID_column()
   username: Mapped[str] = mapped_column(String(255))
   # hashed
-  password: Mapped[bytes] = mapped_column(String(255))
+  password: Mapped[str] = mapped_column(String(255))
 
 class RefreshTokenModel(SQLBaseModel):
   __tablename__ = "refresh_tokens"

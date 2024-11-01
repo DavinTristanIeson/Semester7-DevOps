@@ -1,5 +1,8 @@
-import dotenv
-dotenv.load_dotenv(override=True)
+import os
+if os.getenv("DOCKER") is None:
+  import dotenv
+  dotenv.load_dotenv(override=True)
+
 
 from common.constants import EnvironmentVariables
 from contextlib import asynccontextmanager

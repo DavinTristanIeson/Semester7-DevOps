@@ -8,7 +8,7 @@ class EnvironmentVariables(Enum):
   RefreshTokenSecret = "REFRESH_TOKEN_SECRET"
   ExpressionRecognitionApiUrl = "EXPRESSION_RECOGNITION_API_URL"
   ExpressionRecognitionApiSecret = "EXPRESSION_RECOGNITION_API_SECRET"
-  Environment = "ENVIRONMENT"
+  Docker = "DOCKER"
   PostgresUser = "POSTGRES_USER"
   PostgresPassword = "POSTGRES_PASSWORD"
   PostgresDB = "POSTGRES_DB"
