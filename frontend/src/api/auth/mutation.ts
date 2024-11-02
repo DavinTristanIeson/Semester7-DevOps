@@ -52,7 +52,7 @@ export const useRegister: ApiMutationFunction<RegisterInput, ApiResult<SessionTo
 export const useLogout: ApiMutationFunction<void, ApiResult<never>> = function (options) {
   return useMutation({
     ...options,
-    mutationFn(body) {
+    mutationFn() {
       const sessionToken = SessionToken.get();
       return ApiFetch({
         classType: UserModel,
