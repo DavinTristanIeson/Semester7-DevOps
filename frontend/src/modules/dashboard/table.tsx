@@ -20,7 +20,7 @@ type DashboardTableType = Omit<TaskFile, "results"> & {
 };
 
 export default function DashboardTable() {
-  const { files } = useTaskContext();
+  const { files, setFiles, setStagedFiles } = useTaskContext();
   const flattenedFiles = React.useMemo(() => {
     return files.flatMap((file) => {
       if (!file.results) {
@@ -48,12 +48,12 @@ export default function DashboardTable() {
 
   const filteredFiles = filter
     ? flattenedFiles.filter((file) =>
-        file.result
-          ? FacialExpressionProbabilities.classify(
-              file.result.probabilities
-            ) === filter
-          : false
-      )
+      file.result
+        ? FacialExpressionProbabilities.classify(
+          file.result.probabilities
+        ) === filter
+        : false
+    )
     : flattenedFiles;
 
   const handleFilterClick = (expression: FacialExpression) => {
@@ -63,6 +63,12 @@ export default function DashboardTable() {
       }
       return expression;
     });
+  };
+  const handleResetClick = () => {
+    setFiles([]);
+    setStagedFiles([]);
+    setFilter(null);
+    setPage(1);
   };
 
   const expressionSums = React.useMemo(() => {
@@ -143,7 +149,15 @@ export default function DashboardTable() {
               </Badge>
             ) : undefined}
           </Button>
+
         ))}
+        <Button
+          variant="default"
+          className={DashboardStyles["reset-button"]}
+          onClick={handleResetClick}
+        >
+          Reset
+        </Button>
       </List>
       <Table className={DashboardStyles["table__root"]}>
         <Table.Thead>
@@ -194,8 +208,8 @@ export default function DashboardTable() {
                 >
                   {item.result?.probabilities
                     ? FacialExpressionProbabilities.classify(
-                        item.result.probabilities
-                      )
+                      item.result.probabilities
+                    )
                     : null}
                 </Table.Td>
               </Table.Tr>
