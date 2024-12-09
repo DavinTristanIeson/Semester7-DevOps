@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: devops-sem7-database
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       name: pod-template-devops-sem7-database
@@ -23,6 +23,12 @@ spec:
           image: postgres:15.4-alpine
           ports:
             - containerPort: 5432
+          # Enable this if some transaction checkpoint issue happened.
+          # args:
+          #   - pg_resetwal
+          #   - /var/lib/postgresql/data
+          # securityContext:
+          #   runAsUser: 70 # postgres superuser UID
           envFrom:
             - secretRef:
                 name: secret-devops-sem7-db-comm
@@ -41,6 +47,7 @@ spec:
                 - "5432"
             initialDelaySeconds: 10
             periodSeconds: 5
+            timeoutSeconds: 5
           livenessProbe:
             exec:
               command:
@@ -51,6 +58,7 @@ spec:
                 - "5432"
             initialDelaySeconds: 10
             periodSeconds: 30
+            timeoutSeconds: 5
       volumes:
         - name: volume-devops-sem7-database
           persistentVolumeClaim:

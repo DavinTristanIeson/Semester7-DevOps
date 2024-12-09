@@ -18,22 +18,6 @@ spec:
         env: production
         version: "1.0.0"
     spec:
-      initContainers:
-        - name: wait-for-devops-sem7-database
-          image: busybox
-          # Note to self, check if the URL is correct when running on MiniKube.
-          # We have to wait for the database to be deployed first before deploying the server, since the server depends on the database.
-          # also need to wait for expression recognition service to set up models and download tensorflow stuff.
-          command:
-            - /bin/sh
-            - -c
-            - |
-              while ! nc -z service-devops-sem7-database.svc.cluster.local 5432; do
-                sleep 5
-              done
-              while ! nc -z service-devops-sem7-expreg.svc.cluster.local 8000; do
-                sleep 5
-              done
       containers:
         - name: devops-sem7-server
           image: davintristan/devops_sem7_server:latest
@@ -48,3 +32,10 @@ spec:
                 name: secret-devops-sem7-user-session
             - configMapRef:
                 name: configmap-devops-sem7-server
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5

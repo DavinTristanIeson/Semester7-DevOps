@@ -4,4 +4,4 @@ metadata:
   name: configmap-devops-sem7-expreg
 data:
   DOCKER: "1"
-  API_SERVER_URL: http://service-devops-sem7-server.svc.cluster.local:8000
+  API_SERVER_URL: http://service-devops-sem7-server.default.svc.cluster.local:8000

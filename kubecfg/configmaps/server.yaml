@@ -4,5 +4,5 @@ metadata:
   name: configmap-devops-sem7-server
 data:
   DOCKER: "1"
-  EXPRESSION_RECOGNITION_API_URL: http://service-devops-sem7-expreg.svc.cluster.local:8000
-  POSTGRES_HOST: service-devops-sem7-database.svc.cluster.local
+  EXPRESSION_RECOGNITION_API_URL: http://service-devops-sem7-expreg.default.svc.cluster.local:8000
+  POSTGRES_HOST: service-devops-sem7-database.default.svc.cluster.local
