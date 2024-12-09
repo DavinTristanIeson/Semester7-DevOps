@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-devops-sem7-expreg
+  labels:
+    app: devops-sem7
+spec:
+  selector:
+    matchLabels:
+      app: devops-sem7-expreg
+  replicas: 2
+  template:
+    metadata:
+      name: pod-template-devops-sem7-expreg
+      labels:
+        app: devops-sem7-expreg
+        role: app-service
+        env: production
+        version: 1.0.0
+    spec:
+      containers:
+        - name: devops-sem7-expreg
+          image: davintristan/devops_sem7_expreg:latest
+          ports: 8000:8000
+          volume
+          envFrom:
+            - secretRef:
+                name: secret-devops-sem7-expreg-comm
+            - configMapRef:
+                name: configmap-devops-sem7-expreg
+      volumes:
+        - name: volume-devops-sem7-database
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim-devops-sem7-database

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-devops-sem7-server
+  labels:
+    app: devops-sem7
+    reachability: external
+spec:
+  type: NodePort
+  selector:
+    matchLabels:
+      entity: service-devops-sem7-server
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 8000 # Expose this service in localhost
