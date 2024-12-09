@@ -3,11 +3,11 @@ kind: Deployment
 metadata:
   name: deployment-devops-sem7-server
   labels:
-    app: devops-sem7
+    project: devops-sem7
 spec:
   selector:
     matchLabels:
-      app: deployment-devops-sem7-server
+      app: devops-sem7-server
   replicas: 2
   template:
     metadata:
@@ -16,31 +16,29 @@ spec:
         app: devops-sem7-server
         role: web-server
         env: production
-        version: 1.0.0
+        version: "1.0.0"
     spec:
       initContainers:
-        spec:
-          containers:
-            - name: wait-for-devops-sem7-database
-              image: busybox
-              # Note to self, check if the URL is correct when running on MiniKube.
-              # We have to wait for the database to be deployed first before deploying the server, since the server depends on the database.
-              # also need to wait for expression recognition service to set up models and download tensorflow stuff.
-              command:
-                - /bin/sh
-                - -c
-                - |
-                  while ! nc -z service-devops-sem7-database.svc.cluster.local 5432; do
-                    sleep 5
-                  done
-                  while ! nc -z service-devops-sem7-expreg.svc.cluster.local 8000; do
-                    sleep 5
-                  done
-          restartPolicy: Never
+        - name: wait-for-devops-sem7-database
+          image: busybox
+          # Note to self, check if the URL is correct when running on MiniKube.
+          # We have to wait for the database to be deployed first before deploying the server, since the server depends on the database.
+          # also need to wait for expression recognition service to set up models and download tensorflow stuff.
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while ! nc -z service-devops-sem7-database.svc.cluster.local 5432; do
+                sleep 5
+              done
+              while ! nc -z service-devops-sem7-expreg.svc.cluster.local 8000; do
+                sleep 5
+              done
       containers:
         - name: devops-sem7-server
           image: davintristan/devops_sem7_server:latest
-          ports: 8000:8000
+          ports:
+            - containerPort: 8000
           envFrom:
             - secretRef:
                 name: secret-devops-sem7-expreg-comm

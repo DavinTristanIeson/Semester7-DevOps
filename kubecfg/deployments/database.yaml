@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   name: deployment-devops-sem7-database
   labels:
-    app: devops-sem7
+    project: devops-sem7
 spec:
   selector:
     matchLabels:
-      entity: devops-sem7-database
+      app: devops-sem7-database
   replicas: 2
   template:
-    name: pod-template-devops-sem7-database
     metadata:
+      name: pod-template-devops-sem7-database
       labels:
-        entity: devops-sem7-database
+        app: devops-sem7-database
         role: database
         env: production
-        version: 1.0.0
+        version: "1.0.0"
     spec:
       containers:
         - name: devops-sem7-database

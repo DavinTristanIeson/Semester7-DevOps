@@ -3,13 +3,12 @@ kind: Service
 metadata:
   name: service-devops-sem7-expreg
   labels:
-    app: devops-sem7
+    project: devops-sem7
     reachability: internal
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    matchLabels:
-      entity: devops-sem7-expreg
+    app: devops-sem7-expreg
   ports:
     - protocol: TCP
       port: 8000

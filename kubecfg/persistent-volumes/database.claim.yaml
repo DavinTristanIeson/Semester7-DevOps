@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: persistent-volume-claim-devops-sem7-database
   labels:
-    app: devops-sem7
+    project: devops-sem7
 spec:
   accessModes:
     - ReadWriteOnce

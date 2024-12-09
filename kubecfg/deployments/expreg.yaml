@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: deployment-devops-sem7-expreg
   labels:
-    app: devops-sem7
+    project: devops-sem7
 spec:
   selector:
     matchLabels:
@@ -16,13 +16,13 @@ spec:
         app: devops-sem7-expreg
         role: app-service
         env: production
-        version: 1.0.0
+        version: "1.0.0"
     spec:
       containers:
         - name: devops-sem7-expreg
           image: davintristan/devops_sem7_expreg:latest
-          ports: 8000:8000
-          volume
+          ports:
+            - containerPort: 8001
           envFrom:
             - secretRef:
                 name: secret-devops-sem7-expreg-comm

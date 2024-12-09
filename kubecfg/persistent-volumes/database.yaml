@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: persistent-volume-devops-sem7-database
   labels:
-    app: devops-sem7
+    project: devops-sem7
 spec:
   capacity:
     storage: 1Gi
