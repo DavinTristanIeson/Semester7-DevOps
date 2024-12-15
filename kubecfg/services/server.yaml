@@ -8,9 +8,9 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: service-devops-sem7-server
+    app: devops-sem7-server
   ports:
     - protocol: TCP
       port: 8000
       targetPort: 8000
-      nodePort: 30000 # Expose this service in localhost
+      nodePort: 30000
