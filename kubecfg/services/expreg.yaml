@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-devops-sem7-expreg
+  labels:
+    project: devops-sem7
+    reachability: internal
+spec:
+  type: ClusterIP
+  selector:
+    app: devops-sem7-expreg
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000

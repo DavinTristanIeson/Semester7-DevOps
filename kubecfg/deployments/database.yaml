@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-devops-sem7-database
+  labels:
+    project: devops-sem7
+spec:
+  selector:
+    matchLabels:
+      app: devops-sem7-database
+  replicas: 1
+  template:
+    metadata:
+      name: pod-template-devops-sem7-database
+      labels:
+        app: devops-sem7-database
+        role: database
+        env: production
+        version: "1.0.0"
+    spec:
+      containers:
+        - name: devops-sem7-database
+          image: postgres:15.4-alpine
+          ports:
+            - containerPort: 5432
+          # Enable this if some transaction checkpoint issue happened.
+          # args:
+          #   - pg_resetwal
+          #   - /var/lib/postgresql/data
+          # securityContext:
+          #   runAsUser: 70 # postgres superuser UID
+          envFrom:
+            - secretRef:
+                name: secret-devops-sem7-db-comm
+          volumeMounts:
+            - name: volume-devops-sem7-database
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            # Use pg_isready; if this doesn't work, check TCP port maybe??
+            # This should only be accessible if pg_isready exits with status 0.
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - localhost
+                - -p
+                - "5432"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - localhost
+                - -p
+                - "5432"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+      volumes:
+        - name: volume-devops-sem7-database
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim-devops-sem7-database

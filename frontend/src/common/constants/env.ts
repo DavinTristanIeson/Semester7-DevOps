@@ -6,7 +6,10 @@ function assertEnvExists(name: string, value: any) {
 }
 
 const EnvironmentVariables = {
-  ApiUrl: assertEnvExists("NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL),
+  ApiUrl: typeof window !== 'undefined' &&
+  process.env.NODE_ENV === 'production' ?
+    window.location.origin :
+    assertEnvExists("NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL),
 }
 
 export default EnvironmentVariables;

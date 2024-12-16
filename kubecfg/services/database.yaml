@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-devops-sem7-database
+  labels:
+    project: devops-sem7
+    reachability: internal
+spec:
+  type: ClusterIP
+  selector:
+    app: devops-sem7-database
+  ports:
+    - protocol: TCP
+      port: 5432 # Port accessible within the cluster
+      targetPort: 5432 # Maps to containerPort

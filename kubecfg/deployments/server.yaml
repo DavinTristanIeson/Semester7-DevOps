@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-devops-sem7-server
+  labels:
+    project: devops-sem7
+spec:
+  selector:
+    matchLabels:
+      app: devops-sem7-server
+  replicas: 2
+  template:
+    metadata:
+      name: pod-template-devops-sem7-server
+      labels:
+        app: devops-sem7-server
+        role: web-server
+        env: production
+        version: "1.0.0"
+    spec:
+      containers:
+        - name: devops-sem7-server
+          image: davintristan/devops_sem7_server:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: secret-devops-sem7-expreg-comm
+            - secretRef:
+                name: secret-devops-sem7-db-comm
+            - secretRef:
+                name: secret-devops-sem7-user-session
+            - configMapRef:
+                name: configmap-devops-sem7-server
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
