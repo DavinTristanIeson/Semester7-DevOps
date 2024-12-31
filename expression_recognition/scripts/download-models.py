@@ -4,7 +4,7 @@ sys.path.append(os.getcwd())
 
 import urllib.request
 
-MODELS_PATH = os.path.join("retina", "models")
+MODELS_PATH = "aimodels"
 HAARCASCADE_FILE = os.path.join(MODELS_PATH, "haarcascade_frontalface_default.xml")
 LBFMODEL_FILE = os.path.join(MODELS_PATH, "lbfmodel.yaml")
 EXPRESSION_RECOGNITION_FILE = os.path.join(MODELS_PATH, "expression_recognition.keras")

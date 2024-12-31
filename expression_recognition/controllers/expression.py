@@ -15,17 +15,15 @@ from common.metaclass import Singleton
 import controllers
 from controllers.tasks import EnqueuedExpressionRecognitionTask
 from models.expression import BoundingBox, ExpressionRecognitionTaskResultResource, FacialExpressionProbabilities, Point
+from controllers.preprocessing import face2vec, EXPRESSION_RECOGNITION_MODEL_PATH
 
 import keras
-import retina
 import numpy.typing as npt
 
 class ExpressionRecognitionModel(metaclass=Singleton):
   model: keras.Model
   def initialize(self):
-    model = keras.models.load_model(retina.face.EXPRESSION_RECOGNITION_MODEL_PATH)
-    retina.face.get_face_haar_classifier()
-    retina.face.get_face_landmark_detector()
+    model = keras.models.load_model(EXPRESSION_RECOGNITION_MODEL_PATH)
 
     self.model = model
 
@@ -41,7 +39,7 @@ def expression_recognition(
   for entry in os.scandir(path):
     try:
       img = cv.imread(entry.path)
-      feature = retina.face.face2vec(img)
+      feature = face2vec(img)
     except Exception as e:
       logger.error(f"Skipping {entry.path} due to an unexpected error. Error: {e}")
       continue
@@ -50,7 +48,7 @@ def expression_recognition(
       logger.warning(f"Found no faces in {entry.path}.")
       continue
 
-    features_list.append(feature[0])
+    features_list.extend(feature[0])
     for rect in feature[1]:
       results.append(ExpressionRecognitionTaskResultResource(
         bbox=BoundingBox(x0=rect.x0, x1=rect.x1, y0=rect.y0, y1=rect.y1),
