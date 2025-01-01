@@ -28,7 +28,3 @@ spec:
                 name: secret-devops-sem7-expreg-comm
             - configMapRef:
                 name: configmap-devops-sem7-expreg
-      volumes:
-        - name: volume-devops-sem7-database
-          persistentVolumeClaim:
-            claimName: persistent-volume-claim-devops-sem7-database
