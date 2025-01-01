@@ -26,4 +26,8 @@
 LICENSE
 README.md
 __pycache__
-Venv
+**/*.db
+**/Venv
+**/aimodels
+**/temp
+**/.env
