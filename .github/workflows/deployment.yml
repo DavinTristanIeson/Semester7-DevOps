@@ -23,6 +23,10 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
+      - name: Set up .env.local
+        working-directory: ./frontend
+        run: cp .env.local.example .env.local
+
       - name: Export files
         working-directory: ./frontend
         run: npm run build
