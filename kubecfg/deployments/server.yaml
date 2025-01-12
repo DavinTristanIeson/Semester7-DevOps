@@ -8,7 +8,6 @@ spec:
   selector:
     matchLabels:
       app: devops-sem7-server
-  replicas: 2
   template:
     metadata:
       name: pod-template-devops-sem7-server
@@ -39,3 +38,6 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 30
             timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: "500m" # Required for HPA to calculate CPU utilization
