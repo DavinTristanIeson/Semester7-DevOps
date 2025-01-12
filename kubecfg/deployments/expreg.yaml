@@ -8,7 +8,6 @@ spec:
   selector:
     matchLabels:
       app: devops-sem7-expreg
-  replicas: 2
   template:
     metadata:
       name: pod-template-devops-sem7-expreg
@@ -28,3 +27,6 @@ spec:
                 name: secret-devops-sem7-expreg-comm
             - configMapRef:
                 name: configmap-devops-sem7-expreg
+          resources:
+            requests:
+              cpu: "500m" # Required for HPA to calculate CPU utilization
